@@ -72,9 +72,9 @@ const CustomerRoutes = () => {
         <Route path="/unauthorized" element={<UnAuthorizedPage />}></Route>
       </Routes>
       <FloatingWhatsApp
-        phoneNumber="9429350252"
-        accountName="ArtIsh Resin"
-        avatar={logo}
+        phoneNumber="7863884525"
+        accountName="Resin Gift Store"
+        avatar={"https://res.cloudinary.com/dkhsnhjrh/image/upload/c_crop,w_250,h_250,ar_1:1/v1708707454/2_cemsmx.png"}
         allowEsc
         allowClickAway
         notification

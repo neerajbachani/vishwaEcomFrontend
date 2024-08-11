@@ -75,13 +75,7 @@ export const filters = [
       { value: "vinatgeExclusive", label: "Vintage Exclusive" },
     ],
   },
-  {
-    id: "geodeArt",
-    name: "Geode Art",
-    options: [
-      { value: "geodeartedition", label: "Geode Art Edition" },
-    ],
-  },
+
 
  
 ];
