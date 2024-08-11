@@ -1,0 +1,33 @@
+/* Style the container for the horizontal scroll card */
+.horizontal-scroll-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+  }
+  
+  /* Hide scrollbar for Chrome, Safari, and Opera */
+  .horizontal-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Style the scroll thumb (the draggable part of the scrollbar) */
+  .horizontal-scroll-container::-webkit-scrollbar-thumb {
+    background-color: #888; /* Set the color of the scroll thumb */
+     border-radius: 10px; /*Add rounded corners to the scroll thumb */
+  }
+  
+  /* Style the scroll track (the area behind the scroll thumb) */
+  .horizontal-scroll-container::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Set the color of the scroll track */
+  }
+  
+  /* Style the scroll thumb on hover */
+  .horizontal-scroll-container::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Change the color of the scroll thumb on hover */
+  }
+  
+  /* Style the scroll thumb when it's active (being dragged) */
+  .horizontal-scroll-container::-webkit-scrollbar-thumb:active {
+    background-color: #333; /* Change the color of the scroll thumb when active */
+  }
