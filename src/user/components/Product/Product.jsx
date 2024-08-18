@@ -148,7 +148,7 @@ export default function Product() {
   // ... other state and functions
 
   const handleShopByCategory = () => {
-    setFiltersOpen(true);
+    // setFiltersOpen(true);
     setMobileFiltersOpen(true)
     navigate('/products');
   };

@@ -4,7 +4,7 @@ import React from 'react';
 
 const WhatsAppButton = () => {
     const handleWhatsAppShare = () => {
-        const phoneNumber = '919429350252'; // Replace with your business phone number
+        const phoneNumber = '7863884525'; // Replace with your business phone number
         const deepLink = `whatsapp://send?phone=${encodeURIComponent(phoneNumber)}`;
         window.open(deepLink, '_blank');
       };

@@ -152,19 +152,21 @@ export const createProduct = (product) => async (dispatch) => {
     formData.append('discountPercent', product.discountPercent);
     formData.append('discountedPrice', product.discountedPrice);
     formData.append('quantity', product.quantity);
-    formData.append('varmalaPreservation', product.varmalaPreservation);
     formData.append('resin', product.resin);
-    formData.append('workshop', product.workshop);
-    formData.append('wallClock', product.wallClock);
-    formData.append('namePlate', product.namePlate);
-    formData.append('navkarMantraFrame', product.navkarMantraFrame);
-    formData.append('resinSpecial', product.resinSpecial);
+    formData.append('jewel', product.jewel);
+    formData.append('resinRawMaterials', product.resinRawMaterials);
+    formData.append('festivalSpecial', product.festivalSpecial);
+    formData.append('digitalArt', product.digitalArt);
+    formData.append('business', product.business);
+    formData.append('lippanArt', product.lippanArt);
     formData.append('geodeArt', product.geodeArt);
+    formData.append('vintage', product.vintage);
     formData.append('description1', product.description1);
     formData.append('description2', product.description2);
     formData.append('description3', product.description3);
 
     const { data } = await apii.post(`/api/admin/products/`, formData);
+    console.log(data)
 
     dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: data });
     console.log('created product ', data);
