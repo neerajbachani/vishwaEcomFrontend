@@ -217,14 +217,14 @@ export default function Product() {
                       <Disclosure
                         as="div"
                         key={section.id}
-                        className="border-t border-gray-200 px-4 py-6"
+                        className="border-t border-gray-200 px-4 py-6 font-poppins "
                         // open={false}
                       >
                         {({ open }) => (
                           <>
                             <h3 className="-mx-2 -my-3 flow-root">
                               <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                                <span className="font-medium font-poppins text-primarycolor text-gray-900">
+                                <span className="font-medium font-poppins text-primarycolor text-gray-900  ">
                                   {section.name}
                                 </span>
                                 <span className="ml-6 flex items-center">
@@ -291,7 +291,7 @@ export default function Product() {
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900 m-2 ">
+                  <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900 m-2 font-poppins ">
                     Sort
                     <ChevronDownIcon
                       className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
@@ -309,8 +309,8 @@ export default function Product() {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="py-1">
+                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none ">
+                    <div className="py-1  ">
                       {sortOptions.map((option) => (
                         <Menu.Item key={option.name}>
                           {({ active }) => (
@@ -321,7 +321,7 @@ export default function Product() {
                                   ? "font-medium text-gray-900"
                                   : "text-gray-500",
                                 active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm cursor-pointer"
+                                "block px-4 py-2 text-sm cursor-pointer font-poppins "
                               )}
                             >
                               {option.name}
@@ -398,7 +398,7 @@ export default function Product() {
                               {section.options.map((option, optionIdx) => (
                                 <div
                                   key={option.value}
-                                  className="flex items-center text-secondary-dark-color font"
+                                  className="flex items-center text-secondary-dark-color font-poppins"
                                 >
                                   <input
                                     id={`filter-${section.id}-${optionIdx}`}

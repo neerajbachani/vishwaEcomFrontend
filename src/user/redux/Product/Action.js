@@ -21,6 +21,9 @@ import {
   SEARCH_PRODUCTS_REQUEST,
   SEARCH_PRODUCTS_SUCCESS,
   SEARCH_PRODUCTS_FAILURE,
+  UPDATE_PRODUCT_ORDER_REQUEST,
+  UPDATE_PRODUCT_ORDER_SUCCESS,
+  UPDATE_PRODUCT_ORDER_FAILURE,
 } from "./ActionType";
 import { showErrorToast, showSuccessToast } from "../../components/toast";
 
@@ -65,7 +68,7 @@ export const findProducts = (reqData) => async (dispatch) => {
       geodeArt: geodeArt || '',
       vintage: vintage || '',
       business: business || '',  
-      sort: sort || '',
+      sort: sort || 'order,asc',
       pageNumber: pageNumber || '',
       pageSize: pageSize || '',
       minPrice: minPrice || '',
@@ -102,8 +105,27 @@ export const findProducts = (reqData) => async (dispatch) => {
   }
 };
 
+export const updateProductOrder = (orderData) => async (dispatch) => {
 
+  console.log(orderData)
+  try {
+    dispatch({ type: UPDATE_PRODUCT_ORDER_REQUEST });
 
+    const { data } = await api.put('/api/admin/products/productOrder/', orderData);
+    console.log(data)
+
+    dispatch({ type: UPDATE_PRODUCT_ORDER_SUCCESS, payload: data });
+    showSuccessToast('Product order updated successfully');
+  } catch (error) {
+    dispatch({
+      type: UPDATE_PRODUCT_ORDER_FAILURE,
+      payload: error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message,
+    });
+    showErrorToast('Failed to update product order. Please try again.');
+  }
+};
 
 export const findProductById = (reqData) => async (dispatch) => {
   try {
@@ -203,14 +225,15 @@ export const updateProduct = (product, productId) => async (dispatch) => {
     formData.append('price', product.price);
     formData.append('discountPercent', product.discountPercent);
     formData.append('discountedPrice', product.discountedPrice);
-    formData.append('varmalaPreservation', product.varmalaPreservation);
     formData.append('resin', product.resin);
-    formData.append('workshop', product.workshop);
-    formData.append('wallClock', product.wallClock);
-    formData.append('namePlate', product.namePlate);
-    formData.append('navkarMantraFrame', product.navkarMantraFrame);
-    formData.append('resinSpecial', product.resinSpecial);
+    formData.append('jewel', product.jewel);
+    formData.append('resinRawMaterials', product.resinRawMaterials);
+    formData.append('festivalSpecial', product.festivalSpecial);
+    formData.append('digitalArt', product.digitalArt);
+    formData.append('business', product.business);
+    formData.append('lippanArt', product.lippanArt);
     formData.append('geodeArt', product.geodeArt);
+    formData.append('vintage', product.vintage);
     formData.append('description1', product.description1);
     formData.append('description2', product.description2);
     formData.append('description3', product.description3);

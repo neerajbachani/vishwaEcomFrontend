@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import '../button.css'
 
 const AboutUs = () => {
   return (
     <>
-      <section className="overflow-hidden pt-20 pb-12 lg:pt-[120px] lg:pb-[90px] bg-white dark:bg-dark">
+      <section className="overflow-hidden pt-20 md:pb-12 pb-0 lg:pt-[120px] lg:pb-[90px] bg-white dark:bg-dark">
         <div className="container mx-auto">
           <div className="flex flex-wrap items-center justify-between -mx-4">
             <div className="w-full px-4 lg:w-6/12">
@@ -608,26 +609,22 @@ const AboutUs = () => {
             </div>
 
             <div className="w-full px-4 lg:w-1/2 xl:w-5/12">
-              <div className="mt-10 lg:mt-0">
-                <span className="block mb-4 text-lg font-semibold text-primarycolor">
+              <div className="mt-10 lg:mt-0 px-3">
+                <span className="block mb-4 text-xl font-poppins font-semibold text-primarycolor">
                   Why Choose Us?
                 </span>
-                <h2 className="mb-5 text-3xl font-bold text-secondary-dark-color dark:text-white sm:text-[40px]/[48px]">
+                <h2 className="mb-5 text-lg font-poppins text-secondary-dark-color dark:text-white sm:text-[40px]/[48px]">
                   Make your customers happy by giving services.
                 </h2>
-                <p className="mb-5 text-base text-secondary-dark-color">
+                <p className="mb-5 sm:text-base text-sm font-poppins text-secondary-dark-color">
                 At Resin Gift Store, we take pride in offering an unparalleled selection of high-quality resin products paired with exceptional customer service. Our extensive range caters to diverse needs, whether you're a professional contractor, hobbyist, or DIY enthusiast. With years of expertise in the industry, our knowledgeable team provides valuable insights and tailored recommendations to ensure you find the perfect products for your requirements.
                 </p>
-                <p className="mb-8 text-base text-secondary-dark-color">
+                <p className="mb-8 sm:text-base text-sm font-poppins text-secondary-dark-color md:block hidden ">
                 We understand the importance of competitive pricing without compromising on quality. Our efficient operations and direct sourcing from trusted manufacturers allow us to pass on significant savings to our valued customers. Additionally, our user-friendly ecommerce platform, secure payment options, and efficient shipping ensure a convenient and hassle-free shopping experience from the comfort of your home or office. Choose [Company Name] and experience the difference that comes with partnering with a reliable and reputable source for all your resin product needs.
                 </p>
-                <Link to='/about-us' className="  relative inline-flex items-center justify-center md:px-9 px-2 py-1  overflow-hidden font-medium font-poppins text-indigo-600 transition duration-300 border border-secondary-dark-color ease-out rounded-full shadow-md   group">
-<span className="absolute inset-0 flex items-center justify-center w-full h-full text-[#fff] duration-300 -translate-x-full bg-primarycolor group-hover:translate-x-0 ease">
-<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-</span>
-<span className="absolute flex items-center justify-center w-full h-full text-purple-500 transition-all duration-300 transform group-hover:translate-x-full ease md:text-2xl text-lg text-primarycolor">About Us</span>
-<span className="relative invisible">About Us</span>
-</Link>
+                <div id="nav-part2" className=' flex justify-center items-center text-center' >
+          <Link to='/aboutus'><h4 className=" px-4 py-2"><a href="/aboutus">About Us</a></h4></Link>
+      </div>
               </div>
             </div>
           </div>

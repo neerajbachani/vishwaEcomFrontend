@@ -1,15 +1,16 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
+  ChevronDownIcon,
   MagnifyingGlassIcon,
   QuestionMarkCircleIcon,
   ShoppingBagIcon,
   TruckIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-
+import "../button.css"
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Avatar, Button, Menu, MenuItem, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
@@ -71,6 +72,87 @@ export default function Navigation() {
     </li>
   );
 
+  const NavItem = ({ to, children }) => (
+    <Typography
+      as="li"
+      variant="small"
+      color="blue-gray"
+      className="flex items-center gap-x-2 font-medium font-poppins lg:text-md xl:text-xl"
+    >
+      <NavLink
+        to={to}
+        className={({ isActive }) =>
+          `relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#e63946] after:transition-transform after:duration-300 after:ease-out hover:after:origin-bottom-left hover:after:scale-x-100 ${
+            isActive ? 'text-[#e63946]' : ''
+          }`
+        }
+      >
+        {children}
+      </NavLink>
+    </Typography>
+  );
+  
+
+  const Dropdown = ({ title, items }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef(null);
+    let timeoutId;
+  
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setIsOpen(false);
+        }
+      };
+  
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        if (timeoutId) clearTimeout(timeoutId);  // Clear timeout on unmount
+      };
+    }, []);
+  
+    const handleMouseEnter = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      setIsOpen(true);
+    };
+  
+    const handleMouseLeave = () => {
+      timeoutId = setTimeout(() => setIsOpen(false), 200);
+    };
+  
+    return (
+      <div 
+        className="relative group z-40"
+        ref={dropdownRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <button
+          className="flex items-center gap-1 font-medium font-poppins lg:text-md xl:text-xl"
+        >
+          {title}
+          <ChevronDownIcon className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+        {isOpen && (
+          <div className="absolute mt-2 bg-white border rounded-md shadow-lg">
+            {items.map((item, index) => (
+              <NavLink
+                key={index}
+                to={item.to}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                onClick={() => setIsOpen(false)}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+  
+  
 
   useEffect(() => {
     if (jwt) {
@@ -114,59 +196,30 @@ export default function Navigation() {
     handleCloseUserMenu()
     navigate("/account/order")
   }
+  const handleProfileClick=()=>{
+    handleCloseUserMenu()
+    navigate("/account/profile")
+  }
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2 font-medium font-poppins lg:text-md xl:text-xl  "
-      >
-        <NavLink to="/" className={({ isActive }) => (isActive ? "text-[#e63946]" : "")}>Home</NavLink>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2 font-medium font-poppins lg:text-md xl:text-xl"
-      >
-        <NavLink to="/products" className={({ isActive }) => (isActive ? "text-[#e63946]" : "")}>
-          Products
-        </NavLink>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2  font-medium font-poppins lg:text-md xl:text-xl"
-      >
-        <NavLink to="/gallery" className={({ isActive }) => (isActive ? "text-[#e63946]" : "")}>Gallery</NavLink>
-      </Typography>
-    
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2  font-medium font-poppins lg:text-md xl:text-xl"
-      >
-        <NavLink to="/about-us" className={({ isActive }) => (isActive ? "text-[#e63946]" : "")}>About Us</NavLink>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2  font-medium font-poppins lg:text-md xl:text-xl"
-      >
-        <NavLink to="/contact-us" className={({ isActive }) => (isActive ? "text-[#e63946]" : "")}>Contact Us</NavLink>
-      </Typography>
+      <NavItem to="/">Home</NavItem>
+      <NavItem to="/products">Products</NavItem>
+      <NavItem to="/gallery">Gallery</NavItem>
+      <NavItem to="/about-us">About Us</NavItem>
+      <NavItem to="/contact-us">Contact Us</NavItem>
+      <Dropdown
+        title="Queries"
+        items={[
+          { label: 'Terms and Conditions', to: '/terms&conditions' },
+          { label: 'Privacy Policy', to: '/privacy-policy' },
+          { label: 'Shipping Policy', to: '/shipping-policy' },
+        ]}
+      />
     </ul>
   );
 
 
   return (
-  
-  
-
     <div className="bg-white pb-0 ">
       {/* Mobile menu */}
       <Transition.Root show={open} as={Fragment}>
@@ -225,7 +278,7 @@ export default function Navigation() {
                           cursor: "pointer",
                         }}
                       >
-                        {auth.user?.firstName[0].toUpperCase()}
+                        {/* {auth?.user?.firstName[0].toUpperCase()} */}
                       </Avatar>
                       
                       <Menu
@@ -237,7 +290,7 @@ export default function Navigation() {
                           "aria-labelledby": "basic-button",
                         }}
                       >
-                        <MenuItem onClick={handleCloseUserMenu}>
+                        <MenuItem onClick={handleProfileClick}>
                           Profile
                         </MenuItem>
                         
@@ -266,18 +319,18 @@ export default function Navigation() {
       <header className="relative max-w-screen-2xl mx-auto bg-[white]">
         <nav aria-label="Top" className="mx-auto">
           <div className="">
-            <div className="flex h-16 items-center px-4">
+            <div className="flex h-16 items-center sm:px-4 px-0">
             
 
               {/* Logo */}
               <div className=" flex lg:ml-0 ">
                 <Link to="/">
-                 <img src='https://res.cloudinary.com/dkhsnhjrh/image/upload/v1708707479/2_igcdbk.png' className=' w-[7rem] h-[7rem] mt-4'/>
+                 <img src='https://res.cloudinary.com/dkhsnhjrh/image/upload/v1708707479/2_igcdbk.png' className=' md:w-[7rem] md:h-[7rem] mt-4 object-cover w-[6rem] h-[6rem] '/>
                 </Link>
               </div>
 
               {/* Flyout menus */}
-              <Popover.Group className="hidden lg:ml-8 lg:block lg:self-stretch z-10">
+              <Popover.Group className="hidden lg:ml-8 lg:block lg:self-stretch z-50">
                 <div className="flex h-full items-center">
                 <div className="container mx-auto mt-3">
           {navList}
@@ -315,7 +368,7 @@ export default function Navigation() {
                           cursor: "pointer",
                         }}
                       >
-                        {auth.user?.firstName[0].toUpperCase()}
+                        {/* {auth.user?.firstName[0].toUpperCase()} */}
                       </Avatar>
                       
                       <Menu
@@ -327,7 +380,7 @@ export default function Navigation() {
                           "aria-labelledby": "basic-button",
                         }}
                       >
-                        <MenuItem onClick={handleCloseUserMenu}>
+                        <MenuItem onClick={handleProfileClick}>
                           Profile
                         </MenuItem>
                         
@@ -383,6 +436,49 @@ export default function Navigation() {
               <path d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}></path>
             </svg>
           </button>
+          {auth.user ? (
+                    <div className='block md:hidden'>
+                      <Avatar
+                        className="text-white"
+                        onClick={handleUserClick}
+                        aria-controls={open ? "basic-menu" : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? "true" : undefined}
+                        // onClick={handleUserClick}
+                        sx={{
+                          bgcolor: deepPurple[500],
+                          color: "white",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {/* {auth.user?.firstName[0].toUpperCase()} */}
+                      </Avatar>
+                      
+                      <Menu
+                        id="basic-menu"
+                        anchorEl={anchorEl}
+                        open={openUserMenu}
+                        onClose={handleCloseUserMenu}
+                        MenuListProps={{
+                          "aria-labelledby": "basic-button",
+                        }}
+                      >
+                        <MenuItem onClick={handleProfileClick}>
+                          Profile
+                        </MenuItem>
+                        
+                        <MenuItem onClick={handleMyOrderClick}>
+                          My Orders
+                        </MenuItem>
+                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                      </Menu>
+                    </div>
+                  ) : (
+                    <div id="nav-part2" className=' style flex justify-center items-center text-center text-sm md:hidden ' >
+                    <Link to='/signup'><h4 className=' px-3 py-[6px] ' ><a className='text-[0.8rem]' href="/signup">Sign In</a></h4></Link>
+                </div>
+                  )}
+          
           <nav className="hidden lg:block z-30 ">
             <ul className="flex space-x-4 font-poppins  ">
            
@@ -456,51 +552,7 @@ export default function Navigation() {
 <MenuItems to="/about-us" label="About Us" />
 <MenuItems to="/contact" label="Contact" />
 
-              {auth.user ? (
-                    <div>
-                      <Avatar
-                        className="text-white"
-                        onClick={handleUserClick}
-                        aria-controls={open ? "basic-menu" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? "true" : undefined}
-                        // onClick={handleUserClick}
-                        sx={{
-                          bgcolor: deepPurple[500],
-                          color: "white",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {auth.user?.firstName[0].toUpperCase()}
-                      </Avatar>
-                      
-                      <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={openUserMenu}
-                        onClose={handleCloseUserMenu}
-                        MenuListProps={{
-                          "aria-labelledby": "basic-button",
-                        }}
-                      >
-                        <MenuItem onClick={handleCloseUserMenu}>
-                          Profile
-                        </MenuItem>
-                        
-                        <MenuItem onClick={handleMyOrderClick}>
-                          My Orders
-                        </MenuItem>
-                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                      </Menu>
-                    </div>
-                  ) : (
-                    <Button
-                      onClick={handleOpen}
-                      className="text-sm font-medium text-gray-700 hover:text-gray-800"
-                    >
-                      Sign-in
-                    </Button>
-                  )}
+            
             </ul>
           </motion.nav>
         )}

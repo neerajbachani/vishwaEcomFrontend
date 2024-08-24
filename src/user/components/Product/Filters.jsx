@@ -70,9 +70,9 @@ export const filters = [
   },
   {
     id: "vintage",
-    name: "Vinatage",
+    name: "Vintage",
     options: [
-      { value: "vinatgeExclusive", label: "Vintage Exclusive" },
+      { value: "vintageExclusive", label: "Vintage Exclusive" },
     ],
   },
 

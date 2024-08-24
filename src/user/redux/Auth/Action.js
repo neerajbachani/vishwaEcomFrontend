@@ -21,6 +21,7 @@ export const register = (userData) => async (dispatch) => {
     console.log("user ", user);
     dispatch(registerSuccess(user.jwt));
     showSuccessToast('Account created successfully');
+    window.location.reload();
   } catch (error) {
     console.error('Registration error:', error);
     console.log('Error response:', error.response);
@@ -75,11 +76,14 @@ export const getUserFailure = (error) => ({ type: GET_USER_FAILURE, payload: err
 export const getUser = ( jwt ) => async (dispatch) => {
     dispatch(getUserRequest())
   try {
-    const response = await api.get(`/api/users/profile`,{
-        headers:{
-            "Authorization": `Bearer ${jwt}`
-        }
+    const response = await axios.get(`/api/users/profile`,{
+      baseURL: API_BASE_URL,
+      headers:{
+          "Authorization": `Bearer ${jwt}`,
+          "Content-Type": "application/json"
+      }
     });
+    console.log(response)
     const user = response.data;
     console.log("user: ", user)
     console.log("role: ", user.role)
@@ -108,6 +112,44 @@ export const getAllUsers = () => {
     }
   };
 }
+
+// Add these action creators to your existing Action.js file
+
+export const updateProfile = (userData) => async (dispatch) => {
+  try {
+    const response = await api.put('/api/users/profile', userData);
+    dispatch({ type: 'UPDATE_PROFILE_SUCCESS', payload: response.data });
+  } catch (error) {
+    dispatch({ type: 'UPDATE_PROFILE_FAILURE', payload: error.message });
+  }
+};
+
+export const addAddress = (addressData) => async (dispatch) => {
+  try {
+    const response = await api.post('/api/users/address', addressData);
+    dispatch({ type: 'ADD_ADDRESS_SUCCESS', payload: response.data });
+  } catch (error) {
+    dispatch({ type: 'ADD_ADDRESS_FAILURE', payload: error.message });
+  }
+};
+
+export const updateAddress = (addressId, addressData) => async (dispatch) => {
+  try {
+    const response = await api.put(`/api/users/address/${addressId}`, addressData);
+    dispatch({ type: 'UPDATE_ADDRESS_SUCCESS', payload: response.data });
+  } catch (error) {
+    dispatch({ type: 'UPDATE_ADDRESS_FAILURE', payload: error.message });
+  }
+};
+
+export const deleteAddress = (addressId) => async (dispatch) => {
+  try {
+    const response = await api.delete(`/api/users/address/${addressId}`);
+    dispatch({ type: 'DELETE_ADDRESS_SUCCESS', payload: response.data });
+  } catch (error) {
+    dispatch({ type: 'DELETE_ADDRESS_FAILURE', payload: error.message });
+  }
+};
 
 export const logout = (dispatch) => {
     dispatch({type: LOGOUT, payload: null})

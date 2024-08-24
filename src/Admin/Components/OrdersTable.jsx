@@ -367,7 +367,7 @@ const [isShippingAddressLoading, setIsShippingAddressLoading] = useState(true);
                                   {item.orderItems.map((orderItem) => (
                                     <TableRow key={orderItem._id}>
                                       <TableCell component="th" scope="row">
-                                        {orderItem.product.name}
+                                        {orderItem.product?.name}
                                       </TableCell>
                                       <TableCell>{orderItem.quantity}</TableCell>
                                       <TableCell>{orderItem.discountedPrice}₹</TableCell>

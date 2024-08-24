@@ -184,6 +184,7 @@ const SearchBar = () => {
               overflow: 'auto',
               WebkitOverflowScrolling: 'touch',
               p: 2,
+              
             }}
           >
             <IconButton 
@@ -215,6 +216,7 @@ const SearchBar = () => {
                     sx={{
                       justifyContent: 'flex-start',
                       textAlign: 'left',
+                     
                       p: 1,
                       '&:hover': { bgcolor: 'action.hover' },
                       bgcolor: index === selectedSuggestionIndex ? 'action.selected' : 'inherit',
@@ -260,7 +262,7 @@ const SearchBar = () => {
         <Paper
           sx={{
             position: 'absolute',
-            zIndex: 10,
+            zIndex: 50,
             mt: 1,
             width: 250,
             maxHeight: 300,

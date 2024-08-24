@@ -73,7 +73,7 @@ const OurBestSeller = () => {
         </button>
       </div>
       <div id="nav-part2" className=' flex justify-center items-center text-center' >
-          <Link to='/products'><h4><a href="/products">See All</a></h4></Link>
+          <Link to='/products'><h4 className=' px-4 py-2' ><a href="/products">See All</a></h4></Link>
       </div>
     </div>
   );

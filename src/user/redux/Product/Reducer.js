@@ -17,6 +17,9 @@ import {
   SEARCH_PRODUCTS_REQUEST,
   SEARCH_PRODUCTS_SUCCESS,
   SEARCH_PRODUCTS_FAILURE,
+  UPDATE_PRODUCT_ORDER_REQUEST,
+  UPDATE_PRODUCT_ORDER_SUCCESS,
+  UPDATE_PRODUCT_ORDER_FAILURE,
 } from "./ActionType";
 
 const initialState = {
@@ -57,6 +60,19 @@ const customerProductReducer = (state = initialState, action) => {
     case FIND_PRODUCT_BY_ID_SUCCESS:
       return { ...state, product: action.payload, loading: false };
     case FIND_PRODUCT_BY_ID_FAILURE:
+      return { ...state, loading: false, error: action.payload };
+      case UPDATE_PRODUCT_ORDER_REQUEST:
+      return { ...state, loading: true };
+    case UPDATE_PRODUCT_ORDER_SUCCESS:
+      return { 
+        ...state, 
+        loading: false, 
+        products: {
+          ...state.products,
+          content: action.payload
+        }
+      };
+    case UPDATE_PRODUCT_ORDER_FAILURE:
       return { ...state, loading: false, error: action.payload };
       case CREATE_PRODUCT_REQUEST:
         return {

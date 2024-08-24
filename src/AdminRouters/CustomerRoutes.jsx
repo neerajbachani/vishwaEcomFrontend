@@ -24,6 +24,10 @@ import ResetPassword from '../user/components/ForgotPassword/ResetPassword';
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
 import logo from './logo.png';
 import UnAuthorizedPage from './UnAuthorizedPage';
+import Profile from '../user/components/Profile/Profile';
+import PrivacyPolicy from '../user/components/PrivacyPolicy/PrivacyPolicy';
+import TermsAndConditions from '../user/components/PrivacyPolicy/TermsAndCondition';
+import ShippingPolicy from '../user/components/PrivacyPolicy/ShippingPolicy';
 
 const CustomerRoutes = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -40,9 +44,7 @@ const CustomerRoutes = () => {
 
   // Check if JWT token is present
   const isJWTPresent = () => {
-    // Implement your own logic to check if the JWT token is present
-    // You can use localStorage, cookies, or any other method to store and retrieve the JWT token
-    console.log(localStorage)
+   
     return localStorage.getItem('jwt') !== null;
     
   };
@@ -62,10 +64,14 @@ const CustomerRoutes = () => {
         <Route path="/cart" element={isJWTPresent() ? <CartPage /> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/checkout" element={isJWTPresent() ? <CheckOut /> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/account/order" element={isJWTPresent() ? <MyOrdersPage /> : <Navigate to="/unauthorized" />}></Route>
+        <Route path="/account/profile" element={isJWTPresent() ? <Profile/> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/account/order/:orderId" element={isJWTPresent() ? <OrderDetails /> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/payment/:orderId" element={isJWTPresent() ? <PaymentSuccess /> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/account/rate/:productId" element={isJWTPresent() ? <RateAndReview /> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/gallery" element={<Gallery />}></Route>
+        <Route path="/privacy-policy" element={<PrivacyPolicy/>}></Route>
+        <Route path="/terms&conditions" element={<TermsAndConditions/>}></Route>
+        <Route path="/shipping-policy" element={<ShippingPolicy/>}></Route>
         <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
         <Route path="/otpVerification/email/:emailId" element={<OTPVerification />}></Route>
         <Route path="/resetPassword/email/:emailId" element={<ResetPassword />}></Route>

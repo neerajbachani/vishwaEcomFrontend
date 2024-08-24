@@ -7,20 +7,21 @@
     scrollbar-width: none;
   }
 #nav-part2 {
-    display: flex;
-    align-items: center;
+    
     gap: 1vw;
 }
 
+
+
 #nav-part2 h4 {
-    padding: 10px 20px;
+  
     border: 1px solid #0000003c;
     border-radius: 50px;
     font-weight: 500;
     color: #000000bb;
     transition: all ease 0.4s;
     position: relative;
-    font-size: 18px;
+  
     overflow: hidden;
 }
 

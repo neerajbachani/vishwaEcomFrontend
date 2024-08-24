@@ -61,7 +61,7 @@ const OurFeaturedCollections = () => {
           </div>
         </div>
         <div id="nav-part2" className=' flex justify-center items-center text-center' >
-          <Link to='/products?resinRawMaterials=rawcollections'><h4><a href="/products?resinRawMaterials=rawcollections">See All</a></h4></Link>
+          <Link to='/products?resinRawMaterials=rawcollections'><h4 className=' px-4 py-2' ><a href="/products?resinRawMaterials=rawcollections">See All</a></h4></Link>
       </div>
       </div>
      

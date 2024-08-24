@@ -59,10 +59,11 @@ const SignUpForm = ({ setIsLoggedIn }) => {
           toast.success('Account created successfully'); // Display success toast
 
           // Navigate to the previous page (-1)
-          navigate(-1, { replace: true });
+          navigate('/home', { replace: true });
 
           // Reload the website
-          window.location.reload();
+          // window.location.reload();
+          
         })
       );
     } catch (error) {

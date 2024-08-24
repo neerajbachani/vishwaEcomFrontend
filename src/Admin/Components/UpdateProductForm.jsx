@@ -41,7 +41,15 @@ const UpdateProductForm = () => {
     description1: "",
     description2: "",
     description3: "",
-
+    resin: "",
+    jewel: "",
+    resinRawMaterials: "",
+    festivalSpecial: "",
+    digitalArt: "",
+    business: "",
+    lippanArt: "",
+    geodeArt: "",
+    vintage: "",
     details: "",
 
   });
@@ -101,14 +109,12 @@ const UpdateProductForm = () => {
   }, [productId]);
 
   useEffect(()=>{
-    if(product.product){
-        for(let key in productData){
-    setProductData((prev)=>({...prev,[key]:product.product[key]}))
-    console.log(product.product[key],"--------",key)
-}
+    if (product.product) {
+      for (let key in productData) {
+        setProductData((prev) => ({ ...prev, [key]: product.product[key] || "" }));
+      }
     }
-
-  },[product.product])
+  }, [product.product]);
 
   console.log(product.product)
 
@@ -236,30 +242,7 @@ const UpdateProductForm = () => {
               value={productData.details}
             />
           </Grid>
-          {/* {productData.size.map((size, index) => (
-            <Grid container item spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Size Name"
-                  name="name"
-                  value={size.name}
-                  onChange={(event) => handleSizeChange(event, index)}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Quantity"
-                  name="size_quantity"
-                  type="number"
-                  onChange={(event) => handleSizeChange(event, index)}
-                  required
-                  fullWidth
-                />
-              </Grid>{" "}
-            </Grid>
-          ))} */}
+          
           <Grid item xs={12}>
             <Button
               variant="contained"

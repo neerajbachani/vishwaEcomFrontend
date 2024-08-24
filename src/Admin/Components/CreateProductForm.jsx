@@ -301,14 +301,14 @@ const jwt=localStorage.getItem("jwt")
           </Grid>
           <Grid item xs={6} sm={4}>
             <FormControl fullWidth>
-              <InputLabel>Vinatage</InputLabel>
+              <InputLabel>Vintage</InputLabel>
               <Select
                 name="vintage"
                 value={productData.vintage}
                 onChange={handleChange}
-                label="Vinatage"
+                label="Vintage"
               >
-                <MenuItem value="vintageExclusive">Vinatage Exclusive</MenuItem>
+                <MenuItem value="vintageExclusive">Vintage Exclusive</MenuItem>
               </Select>
             </FormControl>
           </Grid>
