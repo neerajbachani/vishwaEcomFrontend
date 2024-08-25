@@ -35,7 +35,7 @@ const Categories = () => {
     <div className='py-2 md:mt-[7rem] mt-[4rem] '>
       <div className='flex items-center justify-center space-x-5'>
         <div className='bg-[#5baef7] w-1 h-7'></div>
-        <h1 className="font-poppins font-semibold md:text-4xl lg:text-5xl text-2xl">Shop By Category</h1>
+        <h2 className="font-poppins font-semibold md:text-3xl lg:text-4xl text-2xl">Shop By Category</h2>
       </div>
       <div className='horizontal-scroll-container flex mt-[2rem] gap-10 mx-4'>
         {loading ? (
@@ -54,7 +54,7 @@ const Categories = () => {
                     alt={`Category ${index + 1}`}
                   />
                 </div>
-                <p className='md:text-xl text-base font-poppins text-balance  text-center'>{category.name}</p>
+                <p className='md:text-xl text-base font-poppins text-balance max-w-24 md:max-w-0  text-center'>{category.name}</p>
               </Link>
             </div>
           ))

@@ -23,9 +23,9 @@ const OurBestSeller = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-center md:mt-16 mt-8 mb-8">
         <div className="bg-[#5baef7] w-1 h-7 mr-4"></div>
-        <h1 className="font-poppins font-semibold md:text-5xl text-2xl">
+        <h2 className="font-poppins font-semibold md:text-3xl lg:text-4xl text-2xl">
           Our Best Seller
-        </h1>
+        </h2>
       </div>
 
       <div className="relative">

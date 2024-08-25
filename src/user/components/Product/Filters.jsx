@@ -69,6 +69,13 @@ export const filters = [
     ],
   },
   {
+    id: "geodeArt",
+    name: "Geode Art",
+    options: [
+      { value: "geodeartedition", label: "Geode Art Edition" },
+    ],
+  },
+  {
     id: "vintage",
     name: "Vintage",
     options: [

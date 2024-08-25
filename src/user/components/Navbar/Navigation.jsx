@@ -345,7 +345,7 @@ export default function Navigation() {
                
 
                 {/* Search */}
-                <div className="flex lg:ml-3 mb-4 ">
+                <div className="flex lg:mr-5 mb-4 ">
                   <p className=" text-gray-400 hover:text-gray-500">
                     <span className="sr-only">Search</span>
                     <SearchBar/>
@@ -391,12 +391,9 @@ export default function Navigation() {
                       </Menu>
                     </div>
                   ) : (
-                    <Button
-                      onClick={handleOpen}
-                      className="text-sm font-medium text-gray-700 hover:text-gray-800"
-                    >
-                      Sign-in
-                    </Button>
+                    <div id="nav-part2" className=' flex justify-center items-center text-center text-sm ' >
+                    <Link to='/signup'><h4 className=' px-[12px] py-[6px] ' ><a className='text-sm' href="/signup">Sign In</a></h4></Link>
+                </div>
                   )}
                 </div>
 
@@ -503,8 +500,8 @@ export default function Navigation() {
                 {/* Add more SubMenuItems as needed */}
               </MenuItems>
               <MenuItems to="/products?festivalSpecial=diwali&festivalSpecial=rakhi" label="Festival Special">
-                <SubMenuItem to="/products/festivalSpecial=rakhi" label="Resin Customized Rakhi" />
-                <SubMenuItem to="/products/festivalSpecial=diwali" label="Diwali Thali" />
+                <SubMenuItem to="/products?festivalSpecial=rakhi" label="Resin Customized Rakhi" />
+                <SubMenuItem to="/products?festivalSpecial=diwali" label="Diwali Thali" />
                 {/* Add more SubMenuItems as needed */}
               </MenuItems>
               <MenuItems to="/products?business=businessplate" label="Business Plate" />

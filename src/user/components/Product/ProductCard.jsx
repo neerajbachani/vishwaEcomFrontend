@@ -35,7 +35,7 @@ const ProductCard = ({ product }) => {
       </NavLink>
       <div className='textPart bg-white mt-3 mb-3'>
         <div>
-          <p className='text-secondary-dark-color sm:text-xl text-lg font-poppins'>
+          <p className='text-secondary-dark-color sm:text-xl text-lg max-w-[10rem] sm:max-w-[17rem] font-poppins'>
             {name}
           </p>
         </div>

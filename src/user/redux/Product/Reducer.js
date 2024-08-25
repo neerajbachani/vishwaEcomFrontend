@@ -24,6 +24,7 @@ import {
 
 const initialState = {
   products: [],
+  updateProductOrder: [],
   product: null,
   loading: false,
   error: null,
@@ -67,10 +68,7 @@ const customerProductReducer = (state = initialState, action) => {
       return { 
         ...state, 
         loading: false, 
-        products: {
-          ...state.products,
-          content: action.payload
-        }
+        updateProductOrder: action.payload,
       };
     case UPDATE_PRODUCT_ORDER_FAILURE:
       return { ...state, loading: false, error: action.payload };

@@ -67,14 +67,14 @@ const ProductsTable = () => {
       minPrice: 0,
       maxPrice: 100000,
       minDiscount: 0,
-      sort: sort || "price_low",
+      sort: "productOrder",
       pageNumber: page || 1,
-      pageSize: 10,
+      pageSize: 12,
       stock: availability,
       search: searchTerm,
     };
     dispatch(findProducts(data))
-  }, [availability, sort, page, product.deleteProduct, searchTerm]);
+  }, [availability, sort, page, product.deleteProduct, product.updateProductOrder,  searchTerm]);
 
   useEffect(() => {
     if (product.products?.content) {
@@ -98,11 +98,16 @@ const ProductsTable = () => {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    setProducts(items);
+    const updatedOrder = items.map((item, index) => ({
+      id: item._id,
+      productOrder: index + 1,
     
-    // Update the order in the backend
-    dispatch(updateProductOrder(items.map((item, index) => ({ id: item._id, productOrder: index + 1 }))));
+    }));
+
+    dispatch(updateProductOrder(updatedOrder));
   };
+
+  
 
   return (
     <>
@@ -144,8 +149,7 @@ const ProductsTable = () => {
                 <Droppable droppableId="products">
                   {(provided) => (
                     <TableBody {...provided.droppableProps} ref={provided.innerRef}>
-                      {products
-                        .filter((item) => 
+                      {products.filter((item) => 
                           item.name.toLowerCase().includes(searchTerm.toLowerCase())
                         )
                         .map((item, index) => (

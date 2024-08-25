@@ -68,7 +68,7 @@ export const findProducts = (reqData) => async (dispatch) => {
       geodeArt: geodeArt || '',
       vintage: vintage || '',
       business: business || '',  
-      sort: sort || 'order,asc',
+      sort: 'productOrder',
       pageNumber: pageNumber || '',
       pageSize: pageSize || '',
       minPrice: minPrice || '',
@@ -85,7 +85,8 @@ export const findProducts = (reqData) => async (dispatch) => {
       }
     }
 
-    const apiUrl = `/api/products?${params.toString()}`;
+    const timestamp = new Date().getTime();
+    const apiUrl = `/api/products?${params.toString()}&_t=${timestamp}`;
 
     const { data } = await api.get(apiUrl);
 
@@ -95,6 +96,8 @@ export const findProducts = (reqData) => async (dispatch) => {
       payload: data,
     });
   } catch (error) {
+    console.error("Error fetching products:", error);
+    console.error("Error response:", error.response);
     dispatch({
       type: FIND_PRODUCTS_BY_CATEGORY_FAILURE,
       payload:
@@ -111,10 +114,18 @@ export const updateProductOrder = (orderData) => async (dispatch) => {
   try {
     dispatch({ type: UPDATE_PRODUCT_ORDER_REQUEST });
 
-    const { data } = await api.put('/api/admin/products/productOrder/', orderData);
-    console.log(data)
+    const { data } = await api.put('/api/admin/products/updateProductOrder/', orderData);
+    console.log("data",data)
 
-    dispatch({ type: UPDATE_PRODUCT_ORDER_SUCCESS, payload: data });
+    dispatch({ type: UPDATE_PRODUCT_ORDER_SUCCESS, payload: data.updatedProducts });
+
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
+    dispatch(findProducts({
+      pageNumber: 1,
+      pageSize: 12,
+      content: data.updatedProducts,
+    }));
+   
     showSuccessToast('Product order updated successfully');
   } catch (error) {
     dispatch({
