@@ -283,7 +283,7 @@ export default function Product() {
         </Transition.Root>
 
         <main className=" sm:px-4 px-0 lg:px-10 ">
-          <div className="flex items-baseline justify-between border-b border-gray-200 pb-6">
+          <div className="flex items-center justify-between py-2 border-b border-gray-200 pb-6">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 font-poppins text-secondary-dark-color ">
               Product
             </h1>
@@ -430,7 +430,7 @@ export default function Product() {
                 )}
 
                 {/* Product grid */}
-                <div className="lg:col-span-4 sm:w-full mx-auto sm:max-w-full sm:mx-0 px-0 ">
+                <div className="lg:col-span-4 col-span-2 mx-auto   ">
                 {searchQuery && (
           <>
             <h1 className='text-center font-poppins font-bold text-xl py-3'>
@@ -452,7 +452,7 @@ export default function Product() {
                
                 
                 
-                  <div className="flex flex-wrap justify-center sm:space-x-5 gap-5 bg-white py-5  rounded-md ">
+                  <div className="flex flex-wrap justify-center sm:space-x-5 gap-3 sm:gap-5 bg-white py-5  rounded-md ">
                     {productList?.map((item) => (
                       <ProductCard product={item} key={item.id} />
                      

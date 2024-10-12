@@ -71,7 +71,7 @@ export const findProducts = (reqData) => async (dispatch) => {
       geodeArt: geodeArt || '',
       vintage: vintage || '',
       business: business || '',  
-      sort: 'productOrder',
+      sort: sort ||'productOrder',
       pageNumber: pageNumber || '',
       pageSize: pageSize || '',
       minPrice: minPrice || '',
@@ -94,6 +94,7 @@ export const findProducts = (reqData) => async (dispatch) => {
     const { data } = await api.get(apiUrl);
 
     console.log("Fetched data from API:", data);
+    console.log(sort)
     console.log("Products sorted by productOrder:", 
       data.content.map(p => ({ id: p._id, name: p.name, order: p.productOrder }))
     );
@@ -149,17 +150,6 @@ const apii = axios.create({
   },
 });
 
-// export const reorderProduct = (productId, newOrder) => async (dispatch) => {
-//   try {
-//     dispatch({ type: REORDER_PRODUCT_REQUEST });
-//     const { data } = await api.patch(`/api/products/${productId}/reorder`, { newOrder });
-//     dispatch({ type: REORDER_PRODUCT_SUCCESS, payload: data });
-//     return data;
-//   } catch (error) {
-//     dispatch({ type: REORDER_PRODUCT_FAILURE, payload: error.message });
-//     throw error;
-//   }
-// };
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const reorderProduct = createAsyncThunk(
