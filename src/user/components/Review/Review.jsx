@@ -1,7 +1,8 @@
 
 import { FcGoogle } from "react-icons/fc";
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+// import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const reviews = [
   {
@@ -89,7 +90,7 @@ const NavigationButton = ({ direction, onClick, disabled }) => (
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
     disabled={disabled}
   >
-    {direction === 'left' ? <ChevronLeft size={24} /> : <ChevronRight size={24} />}
+    {direction === 'left' ? <FaChevronLeft size={24} /> : <FaChevronRight size={24} />}
   </button>
 );
 

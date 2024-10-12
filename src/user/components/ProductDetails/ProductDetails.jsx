@@ -24,9 +24,10 @@ function classNames(...classes) {
 }
 
 import LoadingBar from 'react-top-loading-bar';
-import { Eye, Heading4, Share2, ShoppingCart } from 'lucide-react'
-import { FaWhatsapp } from 'react-icons/fa'
+// import { Eye, Heading4, Share2, ShoppingCart } from 'lucide-react'
+import { FaEye, FaWhatsapp } from 'react-icons/fa'
 import ProductDescription from './ProductDescription'
+
 
 const ProductCard = ({ product }) => (
   <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -169,7 +170,7 @@ const ProductDetails = () => {
               className="absolute top-2 right-2 bg-white bg-opacity-50 hover:bg-opacity-100"
               onClick={() => setOpenLightbox(true)}
             >
-              <Eye className="h-5 w-5" />
+              <FaEye className="h-5 w-5" />
             </Button>
           </div>
           <Lightbox
