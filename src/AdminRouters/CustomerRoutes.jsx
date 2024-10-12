@@ -28,6 +28,7 @@ import Profile from '../user/components/Profile/Profile';
 import PrivacyPolicy from '../user/components/PrivacyPolicy/PrivacyPolicy';
 import TermsAndConditions from '../user/components/PrivacyPolicy/TermsAndCondition';
 import ShippingPolicy from '../user/components/PrivacyPolicy/ShippingPolicy';
+import ReturnAndRefund from '../user/components/PrivacyPolicy/ReturnAndRefund';
 
 const CustomerRoutes = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -64,14 +65,16 @@ const CustomerRoutes = () => {
         <Route path="/cart" element={isJWTPresent() ? <CartPage /> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/checkout" element={isJWTPresent() ? <CheckOut /> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/account/order" element={isJWTPresent() ? <MyOrdersPage /> : <Navigate to="/unauthorized" />}></Route>
-        <Route path="/account/profile" element={isJWTPresent() ? <Profile/> : <Navigate to="/unauthorized" />}></Route>
+       
         <Route path="/account/order/:orderId" element={isJWTPresent() ? <OrderDetails /> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/payment/:orderId" element={isJWTPresent() ? <PaymentSuccess /> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/account/rate/:productId" element={isJWTPresent() ? <RateAndReview /> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/gallery" element={<Gallery />}></Route>
+        <Route path="/account/profile" element={isJWTPresent() ? <Profile /> : <Navigate to="/unauthorized" />}></Route>
         <Route path="/privacy-policy" element={<PrivacyPolicy/>}></Route>
         <Route path="/terms&conditions" element={<TermsAndConditions/>}></Route>
         <Route path="/shipping-policy" element={<ShippingPolicy/>}></Route>
+        <Route path="/return&refund" element={<ReturnAndRefund/>}></Route>
         <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
         <Route path="/otpVerification/email/:emailId" element={<OTPVerification />}></Route>
         <Route path="/resetPassword/email/:emailId" element={<ResetPassword />}></Route>

@@ -29,7 +29,7 @@ const AboutUs = () => {
                 <div className="w-full px-3 sm:px-4 xl:w-1/2">
                   <div className="relative z-10 my-4">
                     <img
-                      src="https://res.cloudinary.com/dkhsnhjrh/image/upload/v1710614905/EP-GC-RESINART_p_-Emily-McSevich_1_w7mbtq.jpg"
+                      src="https://res.cloudinary.com/dkhsnhjrh/image/upload/v1728726852/1f3850d4-11f9-4ca4-8cca-5727c681e034_cvapwn.jpg"
                       alt=""
                       className="w-full rounded-2xl"
                     />
@@ -623,7 +623,7 @@ const AboutUs = () => {
                 We understand the importance of competitive pricing without compromising on quality. Our efficient operations and direct sourcing from trusted manufacturers allow us to pass on significant savings to our valued customers. Additionally, our user-friendly ecommerce platform, secure payment options, and efficient shipping ensure a convenient and hassle-free shopping experience from the comfort of your home or office. Choose [Company Name] and experience the difference that comes with partnering with a reliable and reputable source for all your resin product needs.
                 </p>
                 <div id="nav-part2" className=' flex justify-center items-center text-center' >
-          <Link to='/aboutus'><h4 className=" px-4 py-2"><a href="/aboutus">About Us</a></h4></Link>
+          <Link to='/about-us'><h4 className=" px-4 py-2"><a href="/about-us">About Us</a></h4></Link>
       </div>
               </div>
             </div>

@@ -9,8 +9,6 @@ import LoginForm from './LoginForm'
 
 const Template = ({title, desc1, desc2, image, formtype, setIsLoggedIn}) => {
 
-    // console.log("ye rha mera form type");
-    // console.log(formtype)
   return (
     <div className='flex justify-between  w-11/12 max-w-[110rem] py-12 mx-auto gap-x-12 gap-y-0 '>
 

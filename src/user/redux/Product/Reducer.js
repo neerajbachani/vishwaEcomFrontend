@@ -20,6 +20,9 @@ import {
   UPDATE_PRODUCT_ORDER_REQUEST,
   UPDATE_PRODUCT_ORDER_SUCCESS,
   UPDATE_PRODUCT_ORDER_FAILURE,
+  REORDER_PRODUCT_REQUEST,
+  REORDER_PRODUCT_SUCCESS,
+  REORDER_PRODUCT_FAILURE,
 } from "./ActionType";
 
 const initialState = {
@@ -53,7 +56,10 @@ const customerProductReducer = (state = initialState, action) => {
         error: action.payload,
       };
     case FIND_PRODUCTS_BY_CATEGORY_SUCCESS:
-      return { ...state, products: action.payload, loading: false };
+      return { ...state,  products: {
+        ...action.payload,
+        content: action.payload.content.sort((a, b) => a.productOrder - b.productOrder)
+      }, loading: false };
     case FIND_PRODUCTS_BY_CATEGORY_FAILURE:
       return { ...state, loading: false, products:[], error: action.payload };
     case FIND_PRODUCT_BY_ID_REQUEST:
@@ -112,6 +118,31 @@ const customerProductReducer = (state = initialState, action) => {
           loading: false,
           error: action.payload,
         };
+        case REORDER_PRODUCT_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null
+      };
+    
+    case REORDER_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        products: {
+          ...state.products,
+          content: state.products.content.map(product =>
+            product._id === action.payload._id ? action.payload : product
+          ).sort((a, b) => a.productOrder - b.productOrder)
+        } 
+      };
+  
+    case REORDER_PRODUCT_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      };
       case DELETE_PRODUCT_REQUEST:
         return {
           ...state,

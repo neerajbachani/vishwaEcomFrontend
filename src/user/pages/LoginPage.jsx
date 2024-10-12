@@ -4,12 +4,12 @@ import React from 'react'
 import Template from '../components/Form/Template'
 
 const LoginPage = ({setIsLoggedIn}) => {
-  const loginImg = "https://res.cloudinary.com/dkhsnhjrh/image/upload/v1710614905/EP-GC-RESINART_p_-Emily-McSevich_1_w7mbtq.jpg"
+  const loginImg = "https://res.cloudinary.com/dkhsnhjrh/image/upload/v1728727073/94d5b85f-ef32-4b00-89ab-d15140bc47b6_u5tqeb.jpg"
   return (
     <Template
       title="Welcome Back to "
-      desc1="Where your resin art journey continues"
-      desc2="log in now to explore exclusive products and connect with a vibrant community of fellow artists."
+      desc1="Resin Gift Store"
+      desc2=""
       image={loginImg}
       formtype="login"
       setIsLoggedIn={setIsLoggedIn}

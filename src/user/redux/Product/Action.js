@@ -24,6 +24,9 @@ import {
   UPDATE_PRODUCT_ORDER_REQUEST,
   UPDATE_PRODUCT_ORDER_SUCCESS,
   UPDATE_PRODUCT_ORDER_FAILURE,
+  REORDER_PRODUCT_REQUEST,
+  REORDER_PRODUCT_SUCCESS,
+  REORDER_PRODUCT_FAILURE,
 } from "./ActionType";
 import { showErrorToast, showSuccessToast } from "../../components/toast";
 
@@ -91,6 +94,9 @@ export const findProducts = (reqData) => async (dispatch) => {
     const { data } = await api.get(apiUrl);
 
     console.log("Fetched data from API:", data);
+    console.log("Products sorted by productOrder:", 
+      data.content.map(p => ({ id: p._id, name: p.name, order: p.productOrder }))
+    );
     dispatch({
       type: FIND_PRODUCTS_BY_CATEGORY_SUCCESS,
       payload: data,
@@ -108,35 +114,7 @@ export const findProducts = (reqData) => async (dispatch) => {
   }
 };
 
-export const updateProductOrder = (orderData) => async (dispatch) => {
 
-  console.log(orderData)
-  try {
-    dispatch({ type: UPDATE_PRODUCT_ORDER_REQUEST });
-
-    const { data } = await api.put('/api/admin/products/updateProductOrder/', orderData);
-    console.log("data",data)
-
-    dispatch({ type: UPDATE_PRODUCT_ORDER_SUCCESS, payload: data.updatedProducts });
-
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
-    dispatch(findProducts({
-      pageNumber: 1,
-      pageSize: 12,
-      content: data.updatedProducts,
-    }));
-   
-    showSuccessToast('Product order updated successfully');
-  } catch (error) {
-    dispatch({
-      type: UPDATE_PRODUCT_ORDER_FAILURE,
-      payload: error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message,
-    });
-    showErrorToast('Failed to update product order. Please try again.');
-  }
-};
 
 export const findProductById = (reqData) => async (dispatch) => {
   try {
@@ -171,6 +149,46 @@ const apii = axios.create({
   },
 });
 
+// export const reorderProduct = (productId, newOrder) => async (dispatch) => {
+//   try {
+//     dispatch({ type: REORDER_PRODUCT_REQUEST });
+//     const { data } = await api.patch(`/api/products/${productId}/reorder`, { newOrder });
+//     dispatch({ type: REORDER_PRODUCT_SUCCESS, payload: data });
+//     return data;
+//   } catch (error) {
+//     dispatch({ type: REORDER_PRODUCT_FAILURE, payload: error.message });
+//     throw error;
+//   }
+// };
+import { createAsyncThunk } from '@reduxjs/toolkit';
+
+export const reorderProduct = createAsyncThunk(
+  'product/reorder',
+  async ({ productId, newOrder }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.patch(`/api/products/${productId}/reorder`, { newOrder });
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const resetProductOrders = () => async (dispatch) => {
+  try {
+    dispatch({ type: 'RESET_PRODUCT_ORDERS_REQUEST' });
+    await api.post('/api/admin/products/reset-orders');
+    dispatch({ type: 'RESET_PRODUCT_ORDERS_SUCCESS' });
+    // Refetch products after reset
+    dispatch(findProducts({}));
+  } catch (error) {
+    dispatch({ 
+      type: 'RESET_PRODUCT_ORDERS_FAILURE',
+      payload: error.message
+    });
+  }
+};
+
 export const createProduct = (product) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_PRODUCT_REQUEST });
@@ -198,10 +216,20 @@ export const createProduct = (product) => async (dispatch) => {
     formData.append('description2', product.description2);
     formData.append('description3', product.description3);
 
+    Object.keys(product).forEach(key => {
+      formData.append(key, product[key]);
+    });
+    
+    // Add productOrder if it exists
+    if (product.productOrder !== undefined) {
+      formData.append('productOrder', product.productOrder);
+    }
+
     const { data } = await apii.post(`/api/admin/products/`, formData);
     console.log(data)
 
     dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: data });
+    dispatch(findProducts({}));
     console.log('created product ', data);
     showSuccessToast('Product created successfully');
   } catch (error) {

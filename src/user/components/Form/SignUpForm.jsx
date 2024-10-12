@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getUser, register } from '../../redux/Auth/Action';
 import LoadingBar from 'react-top-loading-bar';
-import { Toaster, toast } from 'react-hot-toast'; // Import from react-hot-toast
+import { Toaster, toast } from 'react-hot-toast';
 
 const SignUpForm = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const { auth } = useSelector((store) => store);
@@ -42,129 +41,137 @@ const SignUpForm = ({ setIsLoggedIn }) => {
     try {
       event.preventDefault();
       if (userData.password !== userData.confirmPassword) {
-        toast.error('Passwords do not match'); // Display error toast
+        toast.error('Passwords do not match');
         return;
       }
 
-      // Show loading bar
       setProgress(100);
       dispatch(
         register(userData, () => {
-          setProgress(0); // Reset progress after register action is completed
+          setProgress(0);
           setIsLoggedIn(true);
-          const accountData = { ...userData };
-          console.log("printing account data ");
-          console.log(accountData);
-
-          toast.success('Account created successfully'); // Display success toast
-
-          // Navigate to the previous page (-1)
+          toast.success('Account created successfully');
           navigate('/home', { replace: true });
-
-          // Reload the website
-          // window.location.reload();
-          
         })
       );
     } catch (error) {
-      console.error('Submit handler error:', error);
-      toast.error('An error occurred. Please try again.'); // Display error toast
-      setProgress(0); // Reset progress if an error occurs
+      toast.error('An error occurred. Please try again.');
+      setProgress(0);
     }
   }
 
   return (
-    <div>
-      <Toaster /> {/* Render the Toaster component */}
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <Toaster />
       <LoadingBar color="#f11946" progress={progress} />
-      <form onSubmit={submitHandler}>
-        {/* first name and lastName */}
-        <div className=' my-3 flex flex-col gap-5'>
-          <label>
-            <p className=' font-poppins text-xl'>First Name<sup>*</sup></p>
+      <form
+        onSubmit={submitHandler}
+        className="bg-white shadow-md rounded-lg p-8 max-w-lg w-full"
+      >
+        <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">Create an Account</h2>
+        
+        {/* First Name and Last Name */}
+        <div className="flex gap-4 mb-5">
+          <div className="w-1/2">
+            <label className="block mb-2 text-gray-600">First Name<sup>*</sup></label>
             <input
               required
               type="text"
               name="firstName"
               onChange={changeHandler}
-              placeholder="Enter First Name"
+              placeholder="John"
               value={userData.firstName}
-              className='border border-light-bg-color w-60 pl-2 py-3 rounded-2xl text-xl'
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
-          </label>
-
-          <label>
-            <p className=' font-poppins text-xl'>Last Name<sup>*</sup></p>
+          </div>
+          <div className="w-1/2">
+            <label className="block mb-2 text-gray-600">Last Name<sup>*</sup></label>
             <input
               required
               type="text"
               name="lastName"
               onChange={changeHandler}
-              placeholder="Enter Last Name"
+              placeholder="Doe"
               value={userData.lastName}
-              className='border border-light-bg-color w-60 pl-2 py-3 rounded-2xl text-xl'
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
-          </label>
+          </div>
         </div>
-        {/* email Add */}
-        <label>
-          <p className=' font-poppins text-xl '>Email Address<sup>*</sup></p>
+
+        {/* Email Address */}
+        <div className="mb-5">
+          <label className="block mb-2 text-gray-600">Email Address<sup>*</sup></label>
           <input
             required
             type="email"
             name="email"
             onChange={changeHandler}
-            placeholder="Enter Email Address "
+            placeholder="john.doe@example.com"
             value={userData.email}
-            className='border border-light-bg-color w-60 pl-2 py-3 rounded-2xl text-xl'
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
-        </label>
+        </div>
 
-        {/* createPassword and Confirm Password */}
-        <div className='flex flex-col gap-5 mt-5'>
-          <div className='relative'>
-            <label>
-              <p className='font-poppins text-xl'>Create Password<sup>*</sup></p>
-              <input
-                required
-                type={showPassword1 ? ('text') : ('password')}
-                name='password'
-                onChange={changeHandler}
-                placeholder='Enter Password'
-                value={userData.password}
-                className='border border-light-bg-color w-60 pl-2 py-3 rounded-2xl text-xl'
-              />
-              <span className='eye-icon absolute bottom-5 text-2xl ml-5 ' onClick={() => setShowPassword1((prev) => !prev)}>
-                {showPassword1 ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
-              </span>
-            </label>
-          </div>
-
-          <div className='relative'>
-            <label>
-              <p className='font-poppins text-xl'>Confirm Password<sup>*</sup></p>
-              <input
-                required
-                type={showPassword2 ? ('text') : ('password')}
-                name='confirmPassword'
-                onChange={changeHandler}
-                placeholder='Confirm Password'
-                value={userData.confirmPassword}
-                className='border border-light-bg-color w-60 pl-2 py-3 rounded-2xl text-xl'
-              />
-              <span className='eye-icon absolute bottom-5 text-2xl ml-5' onClick={() => setShowPassword2((prev) => !prev)}>
-                {showPassword2 ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
-              </span>
-            </label>
+        {/* Password and Confirm Password */}
+        <div className="mb-5">
+          <label className="block mb-2 text-gray-600">Create Password<sup>*</sup></label>
+          <div className="relative">
+            <input
+              required
+              type={showPassword1 ? 'text' : 'password'}
+              name="password"
+              onChange={changeHandler}
+              placeholder="Enter Password"
+              value={userData.password}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <span
+              className="absolute right-3 top-3 text-xl cursor-pointer text-gray-600"
+              onClick={() => setShowPassword1(!showPassword1)}
+            >
+              {showPassword1 ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+            </span>
           </div>
         </div>
-        <button className=' mt-10 rounded-2xl text-whitecolor bg-secondary-dark-color hover:bg-primarycolor transition-all transition-500ms font-poppins text-xl px-7 py-3 w-full '>
+
+        <div className="mb-5">
+          <label className="block mb-2 text-gray-600">Confirm Password<sup>*</sup></label>
+          <div className="relative">
+            <input
+              required
+              type={showPassword2 ? 'text' : 'password'}
+              name="confirmPassword"
+              onChange={changeHandler}
+              placeholder="Confirm Password"
+              value={userData.confirmPassword}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <span
+              className="absolute right-3 top-3 text-xl cursor-pointer text-gray-600"
+              onClick={() => setShowPassword2(!showPassword2)}
+            >
+              {showPassword2 ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+            </span>
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full py-3 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+        >
           Create Account
         </button>
+
+        {/* Already have an account */}
+        <p className="mt-6 text-center text-gray-600">
+          Already have an account?{" "}
+          <Link className="text-blue-500 hover:underline" to="/signin">Login</Link>
+        </p>
       </form>
-      <Link className='  text-xl text-[#BDE0FE]' to='/signin'>Already have and Account? <span>Login</span></Link>
     </div>
   );
 };
 
 export default SignUpForm;
+

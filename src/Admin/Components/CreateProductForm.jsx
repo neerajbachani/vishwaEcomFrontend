@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from 'react'
 import { Typography } from "@mui/material";
 import {
@@ -15,9 +15,10 @@ import {
 import { Fragment } from "react";
 
 import { useDispatch } from "react-redux";
-import { createProduct } from "../../user/redux/Product/Action";
+import { createProduct, findProducts, resetProductOrders } from "../../user/redux/Product/Action";
 import { Toaster, toast } from 'react-hot-toast';
 import { showSuccessToast, showErrorToast } from '../../user/components/toast';
+import { useSelector } from "react-redux";
 
 
  
@@ -47,9 +48,16 @@ const CreateProductForm = () => {
     description1: "",
     description2: "",
     description3: "",
+    productOrder: 0,
 
   });
 const dispatch=useDispatch();
+const products = useSelector(state => state.product.products.content); 
+console.log("products hai ",products)
+
+useEffect(() => {
+  dispatch(findProducts({})); // Fetch all products when component mounts
+}, [dispatch]);
 const jwt=localStorage.getItem("jwt")
 
   const handleChange = (e) => {
@@ -60,9 +68,72 @@ const jwt=localStorage.getItem("jwt")
     }));
   };
 
+  const handleKeyDown = (descriptionField, event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      
+      const { selectionStart, value } = event.target;
+      const textBeforeCursor = value.substring(0, selectionStart);
+      
+      // Check if the last non-whitespace character before the cursor is a period
+      const endsWithPeriod = /\.\s*$/.test(textBeforeCursor);
+      
+      if (endsWithPeriod) {
+        // Insert a new line at cursor position
+        const newText = 
+          value.substring(0, selectionStart) + 
+          '\n\n' + 
+          value.substring(selectionStart);
+        
+        setProductData(prevState => ({
+          ...prevState,
+          [descriptionField]: newText
+        }));
+
+        // We need to wait for the state to update and the textarea to re-render
+        setTimeout(() => {
+          const textarea = event.target;
+          const newCursorPosition = selectionStart + 2; // +2 for the two newline characters
+          textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+        }, 0);
+      } else if (event.shiftKey) {
+        // If Shift+Enter is pressed, always insert a new line
+        const newText = 
+          value.substring(0, selectionStart) + 
+          '\n' + 
+          value.substring(selectionStart);
+        
+        setProductData(prevState => ({
+          ...prevState,
+          [descriptionField]: newText
+        }));
+
+        setTimeout(() => {
+          const textarea = event.target;
+          const newCursorPosition = selectionStart + 1;
+          textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+        }, 0);
+      } else {
+        // If it's just Enter (no period, no Shift), move to next description field
+        const currentNumber = parseInt(descriptionField.slice(-1));
+        if (currentNumber < 3) {
+          const nextField = `description${currentNumber + 1}`;
+          const nextTextArea = document.querySelector(`textarea[name="${nextField}"]`);
+          if (nextTextArea) {
+            nextTextArea.focus();
+          }
+        }
+      }
+    }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createProduct({ ...productData, image: selectedFile }))
+    const highestOrder = products.length > 0 
+    ? Math.max(...products.map(p => p.productOrder || 0))
+    : 0;
+  const newProductOrder = highestOrder + 1;
+    dispatch(createProduct({ ...productData, image: selectedFile, productOrder: newProductOrder }))
       .then(() => {
         setProductData({
           image: '',
@@ -86,6 +157,7 @@ const jwt=localStorage.getItem("jwt")
           description1: '',
           description2: '',
           description3: '',
+          productOrder: 0,
         });
         setSelectedFile(null);
         // showSuccessToast('Product created successfully');
@@ -133,6 +205,7 @@ const jwt=localStorage.getItem("jwt")
               onChange={handleChange}
             />
           </Grid>
+          
           
           
           
@@ -312,42 +385,25 @@ const jwt=localStorage.getItem("jwt")
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              id="outlined-multiline-static"
-              label="Description 1"
-              multiline
-              name="description1"
-              rows={3}
-              onChange={handleChange}
-              value={productData.description1}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              id="outlined-multiline-static"
-              label="Description 2"
-              multiline
-              name="description2"
-              rows={3}
-              onChange={handleChange}
-              value={productData.description2}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              id="outlined-multiline-static"
-              label="Description 3"
-              multiline
-              name="description3"
-              rows={3}
-              onChange={handleChange}
-              value={productData.description3}
-            />
-          </Grid>
+          {[1, 2, 3].map((num) => (
+            <Grid item xs={12} key={`description${num}`}>
+              <TextField
+                fullWidth
+                label={`Description ${num}`}
+                multiline
+                name={`description${num}`}
+                rows={5}
+                onChange={handleChange}
+                onKeyDown={(e) => handleKeyDown(`description${num}`, e)}
+                value={productData[`description${num}`]}
+                placeholder={`Start typing... 
+• End a sentence with a period and press Enter for a new line in this field
+• Press Shift+Enter for a new line without a period
+• Press Enter alone to move to the next description field`}
+                helperText="Format text with periods + Enter or Shift+Enter"
+              />
+            </Grid>
+          ))}
           <Grid item xs={12} >
             <TextField
               fullWidth
@@ -379,3 +435,4 @@ const jwt=localStorage.getItem("jwt")
 };
 
 export default CreateProductForm;
+

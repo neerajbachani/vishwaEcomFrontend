@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
 import {
@@ -22,6 +22,7 @@ import SearchBar from '../SearchBar/SearchBar';
 
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRef } from 'react';
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
@@ -213,6 +214,8 @@ export default function Navigation() {
           { label: 'Terms and Conditions', to: '/terms&conditions' },
           { label: 'Privacy Policy', to: '/privacy-policy' },
           { label: 'Shipping Policy', to: '/shipping-policy' },
+          { label: 'Return and Refund', to: '/return&refund' },
+
         ]}
       />
     </ul>
@@ -547,7 +550,22 @@ export default function Navigation() {
 
 <MenuItems to="/gallery" label="Gallery" />
 <MenuItems to="/about-us" label="About Us" />
-<MenuItems to="/contact" label="Contact" />
+<MenuItems to="/contact-us" label="Contact" />
+<div className=' px-5 text-xl font-poppins'>
+<Dropdown
+        title="Queries"
+        items={[
+          { label: 'Terms and Conditions', to: '/terms&conditions' },
+          { label: 'Privacy Policy', to: '/privacy-policy' },
+          { label: 'Shipping Policy', to: '/shipping-policy' },
+          { label: 'Return and Refund', to: '/return&refund' },
+
+        ]}
+      />
+</div>
+
+    
+      
 
             
             </ul>
