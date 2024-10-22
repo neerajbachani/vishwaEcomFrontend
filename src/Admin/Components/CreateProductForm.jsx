@@ -32,6 +32,7 @@ const CreateProductForm = () => {
     details: "",
     color: "",
     discount: "",
+    weight: "",
     price: "",
     discountPercent: "",
     discountedPrice: "",
@@ -141,6 +142,7 @@ const jwt=localStorage.getItem("jwt")
           details: '',
           color: '',
           discount: '',
+          weight: '',
           price: '',
           discountPercent: '',
           discountedPrice: '',
@@ -215,6 +217,16 @@ const jwt=localStorage.getItem("jwt")
               label="Price"
               name="price"
               value={productData.price}
+              onChange={handleChange}
+              type="number"
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              fullWidth
+              label="Weight"
+              name="weight"
+              value={productData.weight}
               onChange={handleChange}
               type="number"
             />

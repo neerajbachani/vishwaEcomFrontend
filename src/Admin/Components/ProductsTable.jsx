@@ -46,7 +46,7 @@ const ProductsTable = () => {
       minPrice: 0,
       maxPrice: 100000,
       minDiscount: 0,
-      sort: sort || "price_low",
+      sort: sort || "productOrder",
       pageNumber: page,
       pageSize: 10,
       stock: availability,

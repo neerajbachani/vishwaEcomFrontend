@@ -9,6 +9,7 @@ const OurFeaturedCollections = () => {
   const dispatch = useDispatch();
   const { ourFeaturedProduct } = useSelector((store) => store);
   const featuredProducts = ourFeaturedProduct.ourFeaturedProducts || [];
+  console.log("feature hai ji",featuredProducts)
 
   useEffect(() => {
     dispatch(getOurFeaturedProduct());
@@ -28,35 +29,46 @@ const OurFeaturedCollections = () => {
         <div className='py-5 grid md:grid-cols-3 grid-cols-2 gap-5' >
           <div className='flex flex-col gap-2'>
             {featuredProducts.length > 0 && (
-              <DirectionAwareHover imageUrl={featuredProducts[0].image} className='w-full md:h-[16rem] h-[10rem] object-cover'>
+              <Link to={featuredProducts[0]?.link}>
+               <DirectionAwareHover imageUrl={featuredProducts[0].image} className='w-full md:h-[16rem] h-[10rem] object-cover cursor-pointer '>
                 <p>{featuredProducts[0].title}</p>
               </DirectionAwareHover>
+              </Link>
+             
             )}
             {featuredProducts.length > 1 && (
+              <Link to={featuredProducts[1]?.link}>
               <DirectionAwareHover imageUrl={featuredProducts[1].image} className='w-full md:h-[16rem] h-[10rem]  object-cover'>
                 
                 <p>{featuredProducts[1].title}</p>
               </DirectionAwareHover>
+              </Link>
             )}
           </div>
           <div>
             {featuredProducts.length > 2 && (
+              <Link to={featuredProducts[2]?.link}>
               <DirectionAwareHover imageUrl={featuredProducts[2].image} className='w-full md:h-[32.5rem] h-[20.25rem] object-cover'>
               
                 <p>{featuredProducts[2].title}</p>
               </DirectionAwareHover>
+              </Link>
             )}
           </div>
           <div className='grid grid-flow-col md:flex md:flex-col col-span-2 md:col-span-1 md:gap-2 gap-5'>
             {featuredProducts.length > 3 && (
+              <Link to={featuredProducts[3]?.link}>
               <DirectionAwareHover imageUrl={featuredProducts[3].image} className='w-full md:h-[16rem] h-[10rem] object-cover'>
                 <p>{featuredProducts[3].title}</p>
               </DirectionAwareHover>
+              </Link>
             )}
             {featuredProducts.length > 4 && (
+              <Link to={featuredProducts[4]?.link}>
               <DirectionAwareHover imageUrl={featuredProducts[4].image}  className='w-full md:h-[16rem] h-[10rem]  object-cover'>
                 <p>{featuredProducts[4].title}</p>
               </DirectionAwareHover>
+              </Link>
             )}
           </div>
         </div>

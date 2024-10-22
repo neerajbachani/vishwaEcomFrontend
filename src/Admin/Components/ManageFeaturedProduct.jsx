@@ -1,235 +1,232 @@
-import { useState } from "react";
-import { FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import React, { useState, useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
+  Typography,
   Grid,
-  TextField,
   Button,
+  Box,
+  Card,
+  CardHeader,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Avatar,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  CircularProgress,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
 import {
-    Avatar,
-    Box, 
-    Card,
-    CardHeader,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
- 
-  } from "@mui/material";
-  
-  import React from "react";
-  import { useLocation, useNavigate } from "react-router-dom";
-  import { useEffect } from "react";
-  import {  useSelector } from "react-redux";
-import { createOurFeaturedProduct, deleteOurFeaturedProduct, getOurFeaturedProduct } from "../../user/redux/OurFeaturedProduct/Action";
-
-
-
+  createOurFeaturedProduct,
+  deleteOurFeaturedProduct,
+  getOurFeaturedProduct,
+} from "../../user/redux/OurFeaturedProduct/Action";
+import { findProducts } from "../../user/redux/Product/Action";
+import { toast } from "react-hot-toast";
 
 const ManageFeaturedProduct = () => {
-  
-  const [ ourFeaturedProductData , setOurFeaturedProductData ] = useState({
-    image: "",
-    title: "",
-    link: "",
-    price: "",
-    discountedPrice: "",
-  });
-const dispatch=useDispatch();
-const jwt=localStorage.getItem("jwt")
+  const dispatch = useDispatch();
+  const { ourFeaturedProduct, product, loading, error } = useSelector((store) => ({
+    ourFeaturedProduct: store.ourFeaturedProduct,
+    product: store.product,
+    loading: store.loading,
+    error: store.error,
+  }));
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setOurFeaturedProductData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(createOurFeaturedProduct(ourFeaturedProductData))
-    // dispatch(createProduct(productData))
-    console.log(ourFeaturedProductData);
-  };
-
-  const location = useLocation();
-  const navigate = useNavigate();
-  
-  const { ourFeaturedProduct } = useSelector((store) => store);
-  console.log(ourFeaturedProduct?.ourFeaturedProducts)
-console.log("1")
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    
-    dispatch(getOurFeaturedProduct())
-  }, [ourFeaturedProduct.deleteOurFeaturedProduct]);
+    dispatch(getOurFeaturedProduct());
+    dispatch(findProducts({ pageNumber: 1, pageSize: 1000 }));
+  }, [dispatch, ourFeaturedProduct.createFeaturedProducts, ourFeaturedProduct.deleteOurFeaturedProduct]);
 
+  const handleProductSelect = useCallback((event) => {
+    setSelectedProduct(event.target.value);
+  }, []);
 
-  const handleDeleteOurFeaturedProduct=(ourFeaturedProductId)=>{
-    console.log("delete our featured product ", ourFeaturedProductId)
-    dispatch(deleteOurFeaturedProduct(ourFeaturedProductId))
+  const handleAddFeaturedProduct = useCallback(() => {
+    const selectedProductData = product.products.content.find((p) => p._id === selectedProduct);
+    if (selectedProductData) {
+      const featuredProductData = {
+        image: selectedProductData.image,
+        title: selectedProductData.name,
+        link: `/products/id/${selectedProductData._id}`,
+        price: selectedProductData.price,
+        discountedPrice: selectedProductData.discountedPrice,
+      };
+      dispatch(createOurFeaturedProduct(featuredProductData));
+      toast.success("Featured Product added successfully!");
+      setSelectedProduct("");
+    }
+  }, [dispatch, product.products, selectedProduct]);
+
+  const handleDeleteOurFeaturedProduct = useCallback((ourFeaturedProductId) => {
+    dispatch(deleteOurFeaturedProduct(ourFeaturedProductId));
+    toast.success("Featured Product deleted successfully!");
+  }, [dispatch]);
+
+  const filteredProducts = product.products?.content?.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <CircularProgress color="primary" />
+      </Box>
+    );
   }
-console.log("2")
 
+  if (error) {
+    toast.error(error);
+    return null;
+  }
 
   return (
-    <div className=" bg-[#1b1b1b]">
-      <Typography
-        variant="h3"
-        sx={{ textAlign: "center" }}
-        className="py-10 text-center "
-      >
-        Add New Product Top - Featured - MaxDisc
+    <Box sx={{ backgroundColor: "#121212", minHeight: "100vh", padding: "2rem" }}>
+      <Typography variant="h4" align="center" sx={{ color: "#90caf9", marginBottom: "2rem" }}>
+        Manage Featured Products
       </Typography>
-      <form
-        onSubmit={handleSubmit}
-        className=" min-h-[17rem]"
-      >
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Image URL"
-              name="image"
-              value={ourFeaturedProductData.image}
-              onChange={handleChange}
-            />
-          </Grid>
-            
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Title"
-              name="title"
-              value={ourFeaturedProductData.title}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Product Price"
-              name="price"
-              value={ourFeaturedProductData.price}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Product Original or Discounted Price"
-              name="discountedPrice"
-              value={ourFeaturedProductData.discountedPrice}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Product Link"
-              name="link"
-              value={ourFeaturedProductData.link}
-              onChange={handleChange}
-            />
-          </Grid>
-           
-          <Grid item xs={12} >
-            <Button
-              variant="contained"
-              sx={{ p: 1.8 }}
-              className="py-20"
-              size="large"
-              type="submit"
-            >
-              Add Product
-            </Button>
-         
-          </Grid>
+
+      <Grid container spacing={3} justifyContent="center">
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label="Search Products"
+            variant="outlined"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{
+              backgroundColor: "#1e1e1e",
+              borderRadius: 1,
+              input: { color: "#ffffff" },
+              "& .MuiInputLabel-root": { color: "#90caf9" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "#90caf9" },
+                "&:hover fieldset": { borderColor: "#64b5f6" },
+                "&.Mui-focused fieldset": { borderColor: "#42a5f5" },
+              },
+            }}
+          />
         </Grid>
-      </form>
-      <div className="">
-      <Box width={"100%"}>
-      
-      <Card className="mt-2">
-        <CardHeader
-          title="All Products"
-          sx={{
-            pt: 2,
-            alignItems: "center",
-            "& .MuiCardHeader-action": { mt: 0.6 },
-          }}
-        />
-        <TableContainer>
-          <Table sx={{ minWidth: 800 }} aria-label="table in dashboard">
-            <TableHead>
-              <TableRow>
-                <TableCell>Image</TableCell>
-                <TableCell>Title</TableCell>
-                {/* <TableCell sx={{ textAlign: "center" }}>Category</TableCell> */}
-                <TableCell sx={{ textAlign: "center" }}>Original price</TableCell>
-                <TableCell sx={{ textAlign: "center" }}>price</TableCell>
-
-
-                <TableCell sx={{ textAlign: "center" }}>Link</TableCell>
-               
-                <TableCell sx={{ textAlign: "center" }}>Delete</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {ourFeaturedProduct?.ourFeaturedProducts?.map((item) => (
-                <TableRow
-                  hover
-                  key={item.title}
-                  sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
-                  
-                >
-                  <TableCell>
-                    {" "}
-                    <Avatar alt={item.title} src={item.image} />{" "}
-                  </TableCell>
-
-                  <TableCell
-                    sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
-                  >
-                    <Box sx={{ display: "flex", flexDirection: "column" }}>
-                      <Typography
-                        sx={{
-                          fontWeight: 500,
-                          fontSize: "0.875rem !important",
-                        }}
-                      >
-                        {item.title}
-                      </Typography>
-                    
-                    </Box>
-                  </TableCell>
-                  {/* <TableCell sx={{ textAlign: "center" }}>{item.category.name}</TableCell> */}
-                  <TableCell sx={{ textAlign: "center" }}>{item.price}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{item.discountedPrice}</TableCell>
-
-                   <TableCell sx={{ textAlign: "center" }}>{item.link}</TableCell>
-                   
-              
-                  <TableCell sx={{ textAlign: "center" }}>
-                    <Button variant="text" 
-                    onClick={()=>handleDeleteOurFeaturedProduct(item._id)}
-                    >Delete</Button>
-                  </TableCell>
-                </TableRow>
+        <Grid item xs={12} md={6}>
+          <FormControl fullWidth variant="outlined" sx={{ backgroundColor: "#1e1e1e", borderRadius: 1 }}>
+            <InputLabel id="product-select-label" sx={{ color: "#90caf9" }}>
+              Select Product
+            </InputLabel>
+            <Select
+              labelId="product-select-label"
+              id="product-select"
+              value={selectedProduct}
+              label="Select Product"
+              onChange={handleProductSelect}
+              sx={{
+                color: "#ffffff",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#90caf9",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#64b5f6",
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#42a5f5",
+                },
+              }}
+            >
+              {filteredProducts?.map((item) => (
+                <MenuItem key={item._id} value={item._id}>
+                  <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                    <Typography sx={{ color: "#ffffff" }}>{item.name}</Typography>
+                    <Avatar src={item.image} alt={item.name} sx={{ width: 40, height: 40 }} />
+                  </Box>
+                </MenuItem>
               ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Card>
-      
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Button
+            variant="contained"
+            size="large"
+            sx={{ backgroundColor: "#42a5f5", color: "#ffffff", padding: "0.75rem 2rem" }}
+            onClick={handleAddFeaturedProduct}
+            disabled={!selectedProduct}
+          >
+            Add to Featured Products
+          </Button>
+        </Grid>
+      </Grid>
+
+      <FeaturedProductsTable
+        featuredProducts={ourFeaturedProduct?.ourFeaturedProducts}
+        onDelete={handleDeleteOurFeaturedProduct}
+      />
     </Box>
-      </div>
-    </div>
   );
 };
+
+const FeaturedProductsTable = React.memo(({ featuredProducts, onDelete }) => (
+  <Box width="100%" mt={4}>
+    <Card sx={{ backgroundColor: "#1e1e1e", color: "#ffffff" }}>
+      <CardHeader
+        title="Featured Products"
+        sx={{
+          pt: 2,
+          alignItems: "center",
+          backgroundColor: "#42a5f5",
+          color: "#ffffff",
+          "& .MuiCardHeader-action": { mt: 0.6 },
+        }}
+      />
+      <TableContainer>
+        <Table sx={{ minWidth: 800 }} aria-label="featured products table">
+          <TableHead sx={{ backgroundColor: "#2c2c2c" }}>
+            <TableRow>
+              <TableCell sx={{ color: "#90caf9" }}>Image</TableCell>
+              <TableCell sx={{ color: "#90caf9" }}>Title</TableCell>
+              <TableCell align="center" sx={{ color: "#90caf9" }}>Original Price</TableCell>
+              <TableCell align="center" sx={{ color: "#90caf9" }}>Discounted Price</TableCell>
+              <TableCell align="center" sx={{ color: "#90caf9" }}>Link</TableCell>
+              <TableCell align="center" sx={{ color: "#90caf9" }}>Delete</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {featuredProducts?.map((item) => (
+              <TableRow key={item._id} hover>
+                <TableCell>
+                  <Avatar alt={item.title} src={item.image} />
+                </TableCell>
+                <TableCell>{item.title}</TableCell>
+                <TableCell align="center">{item.price}</TableCell>
+                <TableCell align="center">{item.discountedPrice}</TableCell>
+                <TableCell align="center">
+                  <Button
+                    href={item.link}
+                    target="_blank"
+                    variant="outlined"
+                    sx={{ color: "#42a5f5", borderColor: "#42a5f5" }}
+                  >
+                    View
+                  </Button>
+                </TableCell>
+                <TableCell align="center">
+                  <Button variant="contained" color="error" onClick={() => onDelete(item._id)}>
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Card>
+  </Box>
+));
 
 export default ManageFeaturedProduct;

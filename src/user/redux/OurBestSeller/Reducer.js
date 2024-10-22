@@ -47,7 +47,9 @@ const ourBestSellerProductReducer = (state = initialState, action) => {
               case CREATE_OURBESTSELLER_SUCCESS:
                 return {
                   ...state,
+                  createOurBestSellerProducts: action.payload,
                   loading: false,
+                
                   
                 };
               case CREATE_OURBESTSELLER_FAILURE:

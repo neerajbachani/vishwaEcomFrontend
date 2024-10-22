@@ -11,40 +11,75 @@ import { useParams } from 'react-router-dom'
 import { findProductById, findProducts } from '../../redux/Product/Action'
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import { CiZoomIn } from "react-icons/ci";
+
 import { Button, Input, Skeleton } from '@mui/material';
-
-
-
-
-const reviews = { href: '#', average: 4, totalCount: 117 }
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-import LoadingBar from 'react-top-loading-bar';
-// import { Eye, Heading4, Share2, ShoppingCart } from 'lucide-react'
 import { FaEye, FaWhatsapp } from 'react-icons/fa'
 import ProductDescription from './ProductDescription'
 
+import { useMemo } from 'react';
+import { ChevronDown } from 'lucide-react';
 
-const ProductCard = ({ product }) => (
-  <div className="bg-white rounded-lg shadow-md overflow-hidden">
-    <img src={product.product.image} alt={product.product.name} className="w-full h-48 object-cover" />
-    <div className="p-4">
-      <h3 className="text-lg font-semibold mb-2">{product.product.name}</h3>
-      <div className="flex justify-between items-center">
-        <span className="text-indigo-600 font-bold">₹{product.product.discountedPrice}</span>
-        {product.product.discount && (
-          <span className="text-sm text-green-500">{product.product.discount}% off</span>
-        )}
+const processBulletPoints = (content) => {
+  // First, check if content is already in HTML format with bullet points
+  if (content.includes('<li>')) {
+    return content;
+  }
+
+  // Split content into sentences, handling multiple types of sentence endings
+  const sentences = content
+    .split(/(?<=[.!?])\s+/)
+    .filter(sentence => sentence.trim().length > 0);
+
+  // Convert sentences into bullet points
+  const bulletPoints = sentences.map(sentence => 
+    sentence.trim().replace(/^[•\-\*]\s*/, '') // Remove existing bullet points if any
+  );
+
+  // Create HTML list
+  return `<ul class="list-disc pl-5 space-y-2">
+    ${bulletPoints.map(point => `<li>${point}</li>`).join('')}
+  </ul>`;
+};
+
+const CollapsibleDetails = ({ title = "Product Details", content }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const processedContent = useMemo(() => 
+    processBulletPoints(content),
+    [content]
+  );
+
+  return (
+    <div className="border rounded-lg overflow-hidden shadow-sm">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
+        aria-expanded={isOpen}
+      >
+        <span className="text-lg font-semibold text-gray-800">{title}</span>
+        <ChevronDown 
+          className={`w-5 h-5 text-gray-600 transition-transform duration-300 ${
+            isOpen ? 'transform rotate-180' : ''
+          }`}
+        />
+      </button>
+      <div
+        className={`transition-all duration-300 ease-in-out ${
+          isOpen 
+            ? 'max-h-[500px] opacity-100' 
+            : 'max-h-0 opacity-0'
+        } overflow-hidden`}
+      >
+        <div 
+          className="p-4 prose max-w-none"
+          dangerouslySetInnerHTML={{ __html: processedContent }}
+        />
       </div>
     </div>
-  </div>
-);
-
+  );
+};
 const ProductDetails = () => {
+
   const [isLoading, setIsLoading] = useState(true);
   const [openLightbox, setOpenLightbox] = useState(false);
   const [customizationNote, setCustomizationNote] = useState('');
@@ -95,24 +130,7 @@ const ProductDetails = () => {
     }
   }, [dispatch, ]);
 
-  // const handleAddToCart = async () => {
-  //   const jwt = localStorage.getItem("jwt");
-  //   const formData = new FormData();
-  //   formData.append('productId', productId);
-  //   formData.append('customizationNote', customizationNote);
-    
-  //   if (customizationImage) {
-  //     formData.append('customizationImage', customizationImage);
-  //   }
-  
-  //   try {
-  //     await dispatch(addItemToCart(formData, jwt));
-  //     navigate('/cart');
-  //   } catch (error) {
-  //     console.error("Error adding item to cart:", error);
-  //     // Handle the error appropriately, e.g., show an error message to the user
-  //   }
-  // };
+
    const handleAddToCart = () => {
         const formData = new FormData();
         formData.append('productId', productId);
@@ -152,6 +170,16 @@ const ProductDetails = () => {
   const hasDiscount = product.product.discount && product.product.discount > 0;
   const formattedDiscount = hasDiscount ? product.product.discount.toFixed(2) : null;
 
+  if (!product.product?.details) return null;
+
+  const sections = [
+    {
+      title: "Product Details",
+      content: product.product?.details
+    },
+    // You can add more sections here if needed
+  ];
+
   return (
     
     <div className="container mx-auto px-4 py-8">
@@ -180,7 +208,7 @@ const ProductDetails = () => {
           />
         </div>
         <div className="w-full md:w-1/2 space-y-6">
-          <h1 className="text-3xl font-bold">{product.product.name}</h1>
+          <h1 className="text-3xl font-poppins font-bold">{product.product.name}</h1>
           <div className="flex items-baseline flex-wrap gap-2">
         {hasDiscount ? (
           <>
@@ -204,12 +232,15 @@ const ProductDetails = () => {
      
           <div className="prose max-w-none">
           <ProductDescription product={product.product} />
-            {product.product.details && (
-              <div className="mt-4">
-                <h3 className="text-lg font-semibold mb-2">Product Details</h3>
-                <div dangerouslySetInnerHTML={{ __html: product.product.details }} className="list-disc pl-5" />
-              </div>
-            )}
+          <div className="space-y-4">
+      {sections.map((section, index) => (
+        <CollapsibleDetails
+          key={index}
+          title={section.title}
+          content={section.content}
+        />
+      ))}
+    </div>
           </div>
           
           <form className="mt-5 ">

@@ -1,116 +1,122 @@
-import React from "react";
-import { Badge, Button } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Button, Paper, Typography, Divider, Box } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import CartItem from "../Cart/CartItem";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrderById } from "../../redux/Order/Action";
-import AddressCard from "../Address/AddressCard";
-import { createPayment } from "../../redux/Payment/Action";
 import LoadingBar from 'react-top-loading-bar';
-import { useState } from 'react';
+import CartItem from "../Cart/CartItem";
+import AddressCard from "../Address/AddressCard";
+import { getOrderById } from "../../redux/Order/Action";
+import { createPayment } from "../../redux/Payment/Action";
 
 const OrderSummary = () => {
   const [progress, setProgress] = useState(0);
-
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const { order } = useSelector(state => state);
+
   const searchParams = new URLSearchParams(location.search);
-const orderId = searchParams.get("order_id");
-const dispatch=useDispatch();
-  const jwt=localStorage.getItem("jwt");
-  const {order}=useSelector(state=>state)
+  const orderId = searchParams.get("order_id");
 
-console.log("orderId ", order)
+  useEffect(() => {
+    const fetchOrder = async () => {
+      setProgress(50);
+      try {
+        await dispatch(getOrderById(orderId));
+        setProgress(100);
+      } catch (error) {
+        console.error("Error fetching order:", error);
+        setProgress(0);
+      }
+    };
+    fetchOrder();
+  }, [orderId, dispatch]);
 
-useEffect(() => {
-  setProgress(50); // Set loading progress to 50%
-  dispatch(getOrderById(orderId))
-    .then(() => {
-      setProgress(100); // Set loading progress to 100%
-      setTimeout(() => {
-        setProgress(0); // Reset loading progress after a short delay
-      }, 500);
-    })
-    .catch(() => {
-      setProgress(0); // Reset loading progress if there's an error
-    });
-}, [orderId]);
-
-const handleCreatePayment = () => {
-  setProgress(50); // Set loading progress to 50%
-  dispatch(createPayment(order.order?._id))
-    .then(() => {
-      setProgress(100); // Set loading progress to 100%
-      setTimeout(() => {
-        setProgress(0); // Reset loading progress after a short delay
-      }, 500);
-    })
-    .catch(() => {
-      setProgress(0); // Reset loading progress if there's an error
-    });
-};
-  
-console.log(order.order?.shippingAddress)
+  const handleCreatePayment = async () => {
+    setProgress(50);
+    try {
+      await dispatch(createPayment(order.order?._id));
+      setProgress(100);
+      // Navigate to payment confirmation page or show success message
+    } catch (error) {
+      console.error("Error creating payment:", error);
+      setProgress(0);
+      // Show error message to user
+    }
+  };
 
   return (
-    <div className="space-y-5">
-       <LoadingBar
-      color="#e63946"
-      progress={progress}
-      onLoaderFinished={() => setProgress(0)}
-    />
-        <div className="p-5 shadow-lg rounded-md border ">
-            <AddressCard address={order.order?.shippingAddress}/>
-        </div>
-      <div className="lg:grid grid-cols-3 relative justify-between">
-        <div className="lg:col-span-2 ">
-          <div className=" space-y-3">
+    <Box sx={{ maxWidth: 1200, margin: 'auto', padding: 3 }}>
+      <LoadingBar
+        color="#e63946"
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
+      <Typography variant="h4" gutterBottom sx={{ fontFamily: 'Poppins', fontWeight: 600 }}>
+        Order Summary
+      </Typography>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+        <Box sx={{ flex: 2 }}>
+          <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
+            <Typography variant="h6" gutterBottom sx={{ fontFamily: 'Poppins', fontWeight: 600 }}>
+              Delivery Address
+            </Typography>
+            <AddressCard address={order.order?.shippingAddress} />
+          </Paper>
+          <Paper elevation={3} sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom sx={{ fontFamily: 'Poppins', fontWeight: 600 }}>
+              Order Items
+            </Typography>
             {order.order?.orderItems.map((item) => (
-              <div className=" relative" >
-                <CartItem item={item} showButton={false}  />
-
-              </div>
+              <CartItem key={item._id} item={item} showButton={false} />
             ))}
-          </div>
-        </div>
-        <div className="sticky top-0 h-[100vh] mt-5 lg:mt-0 ml-5">
-          <div className="border p-5 bg-white shadow-lg rounded-md">
-            <p className="font-bold opacity-60 pb-4 font-poppins text-lg">PRICE DETAILS</p>
-            <hr />
-
-            <div className="space-y-3 font-semibold">
-              <div className="flex justify-between pt-3 text-black text-lg font-poppins ">
-                <span>Price ({order.order?.totalItem} item)</span>
-                <span>₹{order.order?.totalPrice}</span>
-              </div>
-              <div className="flex justify-between text-lg font-poppins">
-                <span>Discount</span>
-                <span className="text-green-700">-₹{order.order?.discount}</span>
-              </div>
-              <div className="flex justify-between text-lg font-poppins">
-                <span>Delivery Charges</span>
-                <span className="text-green-700">Free</span>
-              </div>
-              <hr />
-              <div className="flex justify-between font-bold text-lg font-poppins">
-                <span>Total Amount</span>
-                <span className="text-green-700">₹{order.order?.totalDiscountedPrice}</span>
-              </div>
-            </div>
-
+          </Paper>
+        </Box>
+        <Box sx={{ flex: 1 }}>
+          <Paper elevation={3} sx={{ p: 3, position: 'sticky', top: 20 }}>
+            <Typography variant="h6" gutterBottom sx={{ fontFamily: 'Poppins', fontWeight: 600 }}>
+              Price Details
+            </Typography>
+            <Divider sx={{ my: 2 }} />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+              <Typography sx={{ fontFamily: 'Poppins' }}>Price ({order.order?.totalItem} items)</Typography>
+              <Typography sx={{ fontFamily: 'Poppins' }}>₹{order.order?.totalPrice}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+              <Typography sx={{ fontFamily: 'Poppins' }}>Discount</Typography>
+              <Typography sx={{ fontFamily: 'Poppins', color: 'green' }}>-₹{order.order?.discount}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+              <Typography sx={{ fontFamily: 'Poppins' }}>Delivery Charges</Typography>
+              <Typography sx={{ fontFamily: 'Poppins', color: 'green' }}>{order.order?.deliveryCharge}</Typography>
+            </Box>
+            <Divider sx={{ my: 2 }} />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+              <Typography sx={{ fontFamily: 'Poppins', fontWeight: 600 }}>Total Amount</Typography>
+              <Typography sx={{ fontFamily: 'Poppins', fontWeight: 600, color: 'green' }}>
+                ₹{order.order?.totalDiscountedPrice}
+              </Typography>
+            </Box>
             <Button
               onClick={handleCreatePayment}
               variant="contained"
-              type="submit"
-              sx={{ padding: ".8rem 2rem", marginTop: "2rem", width: "100%" , backgroundColor: "#e63946" , fontFamily: "poppins", fontSize: "1.2rem" }}
+              fullWidth
+              sx={{
+                mt: 2,
+                backgroundColor: "#e63946",
+                fontFamily: "Poppins",
+                fontSize: "1rem",
+                '&:hover': {
+                  backgroundColor: "#d62828",
+                },
+              }}
             >
-              Payment
+              Proceed to Payment
             </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Paper>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { getCart } from "../../redux/Cart/Action";
 import AuthenticatedComponent from "../AuthenticatedComponent";
 import LoadingBar from 'react-top-loading-bar';
+import { checkTokenExpiration } from "../../../Config/authUtils";
 
 const Cart = () => {
   const [progress, setProgress] = useState(0);
@@ -16,22 +17,28 @@ const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const jwt = localStorage.getItem("jwt");
+  console.log(jwt)
   const {cart}=useSelector((store)=>store);
   console.log("cart ",cart)
 
-useEffect(() => {
-  setProgress(50); // Set loading progress to 50%
-  dispatch(getCart(jwt))
-    .then(() => {
-      setProgress(100); // Set loading progress to 100%
-      setTimeout(() => {
-        setProgress(0); // Reset loading progress after a short delay
-      }, 500);
-    })
-    .catch(() => {
-      setProgress(0); // Reset loading progress if there's an error
-    });
-}, [jwt, cart.addedCartItems, cart.updateCartItem, cart.deleteCartItem]);
+  useEffect(() => {
+    if (!checkTokenExpiration()) {
+      navigate('/login');
+      return;
+    }
+
+    setProgress(50);
+    dispatch(getCart(jwt))
+      .then(() => {
+        setProgress(100);
+        setTimeout(() => {
+          setProgress(0);
+        }, 500);
+      })
+      .catch(() => {
+        setProgress(0);
+      });
+  }, [jwt, cart.addedCartItems, cart.updateCartItem, cart.deleteCartItem]);
   return (
     <div className="">
       <LoadingBar
@@ -64,10 +71,7 @@ useEffect(() => {
               <span>Discount</span>
               <span className="text-green-700 font-poppins">-₹{cart.cart?.discount}</span>
             </div>
-            <div className="flex justify-between font-poppins text-lg">
-              <span>Delivery Charges</span>
-              <span className="text-green-700 font-poppins">Free</span>
-            </div>
+           
             <hr />
             <div className="flex justify-between font-bold text-xl font-poppins ">
               <span>Total Amount</span>

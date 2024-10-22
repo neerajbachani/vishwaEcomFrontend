@@ -54,7 +54,7 @@ const Categories = () => {
                     alt={`Category ${index + 1}`}
                   />
                 </div>
-                <p className='md:text-xl text-base font-poppins text-balance max-w-24 md:max-w-0  text-center'>{category.name}</p>
+                <p className='md:text-lg text-base font-poppins text-balance mx-auto max-w-24 text-center md:max-w-30 '>{category.name}</p>
               </Link>
             </div>
           ))

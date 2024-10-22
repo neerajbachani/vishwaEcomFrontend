@@ -246,47 +246,37 @@ export const updateProduct = (product, productId) => async (dispatch) => {
     dispatch({ type: UPDATE_PRODUCT_REQUEST });
 
     const formData = new FormData();
-    formData.append('image', product.image);
-    formData.append('name', product.name);
-    formData.append('details', product.details);
-    formData.append('color', product.color);
-    formData.append('discount', product.discount);
-    formData.append('price', product.price);
-    formData.append('discountPercent', product.discountPercent);
-    formData.append('discountedPrice', product.discountedPrice);
-    formData.append('resin', product.resin);
-    formData.append('jewel', product.jewel);
-    formData.append('resinRawMaterials', product.resinRawMaterials);
-    formData.append('festivalSpecial', product.festivalSpecial);
-    formData.append('digitalArt', product.digitalArt);
-    formData.append('business', product.business);
-    formData.append('lippanArt', product.lippanArt);
-    formData.append('geodeArt', product.geodeArt);
-    formData.append('vintage', product.vintage);
-    formData.append('description1', product.description1);
-    formData.append('description2', product.description2);
-    formData.append('description3', product.description3);
+    
+    // Append image only if a new file is selected
+    if (product.image instanceof File) {
+      formData.append('image', product.image);
+    }
+
+    // Append all other fields
+    Object.keys(product).forEach(key => {
+      if (key !== 'image') {
+        formData.append(key, product[key]);
+      }
+    });
 
     const { data } = await apii.put(`/api/admin/products/${productId}`, formData);
 
-    dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: data });
-    console.log('created product ', data);
-    showSuccessToast('Product created successfully');
+    dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: data });
+    console.log('updated product ', data);
+    showSuccessToast('Product updated successfully');
   } catch (error) {
     dispatch({
-      type: CREATE_PRODUCT_FAILURE,
+      type: UPDATE_PRODUCT_FAILURE,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
     });
     if (error.response && error.response.status === 400) {
-      // Validation error
       showErrorToast('Please fill in all required fields');
     } else {
-      console.log(error.response);
-      console.log(error);
-      showErrorToast('Failed to create product. Please try again.');
+      console.error(error);
+   
     }
   }
 };
