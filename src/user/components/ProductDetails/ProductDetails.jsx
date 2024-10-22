@@ -17,7 +17,8 @@ import { FaEye, FaWhatsapp } from 'react-icons/fa'
 import ProductDescription from './ProductDescription'
 
 import { useMemo } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDoubleDownIcon } from '@heroicons/react/24/outline'
+
 
 const processBulletPoints = (content) => {
   // First, check if content is already in HTML format with bullet points
@@ -57,7 +58,7 @@ const CollapsibleDetails = ({ title = "Product Details", content }) => {
         aria-expanded={isOpen}
       >
         <span className="text-lg font-semibold text-gray-800">{title}</span>
-        <ChevronDown 
+        <ChevronDoubleDownIcon
           className={`w-5 h-5 text-gray-600 transition-transform duration-300 ${
             isOpen ? 'transform rotate-180' : ''
           }`}
