@@ -1,5 +1,5 @@
 // authUtils.js
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { store } from '../user/redux/store'; // Adjust path as needed
 import { logout } from '../user/redux/Auth/Action';
 
