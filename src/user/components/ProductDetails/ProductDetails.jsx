@@ -85,7 +85,7 @@ const ProductDetails = () => {
   const [openLightbox, setOpenLightbox] = useState(false);
   const [customizationNote, setCustomizationNote] = useState('');
   const [customizationImage, setCustomizationImage] = useState(null);
-  const [similarProducts, setSimilarProducts] = useState([]);
+  // const [similarProducts, setSimilarProducts] = useState([]);
 
   const { productId } = useParams();
   const navigate = useNavigate();
@@ -102,34 +102,34 @@ const ProductDetails = () => {
       dispatch(getCart(jwt))
   }, [productId, dispatch, jwt]);
 
-  useEffect(() => {
-    if (product.product) {
-      const category = Object.keys(product.product).find(key => 
-        ['varmalaPreservation', 'wallClock', 'geodeArt', 'namePlate', 'navkarMantraFrame', 'resinSpecial', 'workshop'].includes(key) && product.product[key]
-      );
+  // useEffect(() => {
+  //   if (product?.product) {
+  //     const category = Object.keys(product?.product).find(key => 
+  //       ['varmalaPreservation', 'wallClock', 'geodeArt', 'namePlate', 'navkarMantraFrame', 'resinSpecial', 'workshop'].includes(key) && product.product[key]
+  //     );
       
-      console.log('Selected category:', category);
+  //     console.log('Selected category:', category);
       
-      if (category) {
-        dispatch(findProducts({ [category]: product.product[category], pageSize: 4 }))
-          .then(() => {
+  //     if (category) {
+  //       dispatch(findProducts({ [category]: product?.product[category], pageSize: 4 }))
+  //         .then(() => {
           
-            if (product.product) {
-              setSimilarProducts(product.products.filter(p => p._id !== product.product._id));
-            } else {
-              console.error('Unexpected response structure:', response);
-              setError('Failed to load similar products');
-            }
-          })
-          .catch((error) => {
-            console.error('Error fetching similar products:', error);
-            setError('Failed to load similar products');
-          });
-      } else {
-        console.log('No matching category found');
-      }
-    }
-  }, [dispatch, ]);
+  //           if (product?.product) {
+  //             setSimilarProducts(product?.products.filter(p => p._id !== product.product._id));
+  //           } else {
+  //             console.error('Unexpected response structure:', response);
+  //             setError('Failed to load similar products');
+  //           }
+  //         })
+  //         .catch((error) => {
+  //           console.error('Error fetching similar products:', error);
+  //           setError('Failed to load similar products');
+  //         });
+  //     } else {
+  //       console.log('No matching category found');
+  //     }
+  //   }
+  // }, [dispatch, ]);
 
 
    const handleAddToCart = () => {
@@ -188,8 +188,8 @@ const ProductDetails = () => {
         <div className="w-full md:w-1/2">
           <div className="relative">
             <img
-              src={product.product.image}
-              alt={product.product.name}
+              src={product?.product?.image}
+              alt={product?.product?.name}
               className="w-full h-auto object-cover rounded-lg shadow-lg"
               onClick={() => setOpenLightbox(true)}
             />
@@ -209,15 +209,15 @@ const ProductDetails = () => {
           />
         </div>
         <div className="w-full md:w-1/2 space-y-6">
-          <h1 className="text-3xl font-poppins font-bold">{product.product.name}</h1>
+          <h1 className="text-3xl font-poppins font-bold">{product?.product?.name}</h1>
           <div className="flex items-baseline flex-wrap gap-2">
         {hasDiscount ? (
           <>
             <span className="text-2xl font-semibold text-indigo-600">
-              ₹{product.product.discountedPrice?.toLocaleString()}
+              ₹{product.product?.discountedPrice?.toLocaleString()}
             </span>
             <span className="text-lg text-gray-500 line-through">
-              ₹{product.product.price?.toLocaleString()}
+              ₹{product.product?.price?.toLocaleString()}
             </span>
             <span className="text-sm font-medium text-green-500 bg-green-50 px-2 py-1 rounded">
               {formattedDiscount}% off
@@ -225,20 +225,20 @@ const ProductDetails = () => {
           </>
         ) : (
           <span className="text-2xl font-semibold text-gray-900">
-            ₹{product.product.price?.toLocaleString()}
+            ₹{product.product?.price?.toLocaleString()}
           </span>
         )}
       </div>
       
      
           <div className="prose max-w-none">
-          <ProductDescription product={product.product} />
+          <ProductDescription product={product?.product} />
           <div className="space-y-4">
       {sections.map((section, index) => (
         <CollapsibleDetails
           key={index}
-          title={section.title}
-          content={section.content}
+          title={section?.title}
+          content={section?.content}
         />
       ))}
     </div>

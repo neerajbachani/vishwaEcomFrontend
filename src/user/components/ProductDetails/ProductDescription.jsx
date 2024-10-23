@@ -6,7 +6,7 @@ const ProductDescription = ({ product }) => {
     if (!description) return null;
     
     // Split the description by double line breaks (created when admin uses period + Enter)
-    const paragraphs = description.split('\n\n').filter(Boolean);
+    const paragraphs = description?.split('\n\n').filter(Boolean);
     
     if (paragraphs.length === 0) return null;
 

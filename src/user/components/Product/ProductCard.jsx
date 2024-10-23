@@ -69,7 +69,7 @@ const ProductCard = ({ product }) => {
   }, [image]);
 
   return (
-    <div className=" w-[40%] md:w-1/3 lg:w-1/4 sm:p-2">
+    <div className=" w-[40%] md:w-1/3 lg:w-[27%] xl:w-1/4 sm:p-2">
       <div className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg h-full flex flex-col">
         <NavLink to={`/products/id/${_id}`} className="block relative h-48 sm:h-64">
           {!imageLoaded && (
