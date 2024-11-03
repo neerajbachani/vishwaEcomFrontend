@@ -281,13 +281,7 @@ export const updateProduct = (product, productId) => async (dispatch) => {
       payload: errorMessage
     });
 
-    if (error.response?.status === 400) {
-      showErrorToast('Please fill in all required fields correctly');
-    } else if (error.response?.status === 500) {
-      showErrorToast('Server error: ' + errorMessage);
-    } else {
-      showErrorToast(errorMessage);
-    }
+   
     
     throw error; // Re-throw to handle in component
   }

@@ -114,8 +114,8 @@ const UpdateProductForm = () => {
       await dispatch(updateProduct({ ...submissionData, image: selectedFile }, productId));
     } catch (error) {
       console.error('Error updating product:', error);
-      const errorMessage = error.response?.data?.error || 'Failed to update product. Please try again.';
-      showErrorToast(errorMessage);
+   
+     
     }
   };
 
