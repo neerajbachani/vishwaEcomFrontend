@@ -244,40 +244,52 @@ export const createProduct = (product) => async (dispatch) => {
 export const updateProduct = (product, productId) => async (dispatch) => {
   try {
     dispatch({ type: UPDATE_PRODUCT_REQUEST });
-
     const formData = new FormData();
-    
+   
     // Append image only if a new file is selected
     if (product.image instanceof File) {
       formData.append('image', product.image);
     }
 
-    // Append all other fields
+    // Ensure numeric fields are properly formatted
+    const numericFields = ['price', 'discountedPrice', 'discount', 'quantity', 'weight'];
+    
+    // Append all fields to formData
     Object.keys(product).forEach(key => {
       if (key !== 'image') {
-        formData.append(key, product[key]);
+        // Convert numeric fields to numbers and ensure they're not null
+        if (numericFields.includes(key)) {
+          const value = product[key] === null ? 0 : Number(product[key]);
+          formData.append(key, value);
+        } else {
+          formData.append(key, product[key]);
+        }
       }
     });
 
     const { data } = await apii.put(`/api/admin/products/${productId}`, formData);
-
     dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: data });
     console.log('updated product ', data);
     showSuccessToast('Product updated successfully');
   } catch (error) {
+    const errorMessage = error.response?.data?.error || 
+                        error.response?.data?.message || 
+                        'Failed to update product';
+    
     dispatch({
       type: UPDATE_PRODUCT_FAILURE,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: errorMessage
     });
-    if (error.response && error.response.status === 400) {
-      showErrorToast('Please fill in all required fields');
+
+    if (error.response?.status === 400) {
+      showErrorToast('Please fill in all required fields correctly');
+    } else if (error.response?.status === 500) {
+      showErrorToast('Server error: ' + errorMessage);
     } else {
-      console.error(error);
-   
+      showErrorToast(errorMessage);
     }
+    
+    throw error; // Re-throw to handle in component
   }
 };
 
