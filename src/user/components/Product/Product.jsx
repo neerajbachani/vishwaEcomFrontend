@@ -119,20 +119,45 @@ export default function Product() {
     stock,
     searchQuery,
   ]);
+  // const handleFilter = (value, sectionId) => {
+  //   const searchParams = new URLSearchParams(location.search);
+  //   let filterValues = searchParams.getAll(sectionId);
+  
+  //   if (filterValues.includes(value)) {
+  //     filterValues = filterValues.filter((item) => item !== value);
+  //   } else {
+  //     filterValues.push(value);
+  //   }
+  
+  //   searchParams.delete(sectionId);
+  //   filterValues.forEach((val) => {
+  //     searchParams.append(sectionId, val);
+  //   });
+  
+  //   const query = searchParams.toString();
+  //   navigate({ search: `?${query}` });
+  // };
+
   const handleFilter = (value, sectionId) => {
     const searchParams = new URLSearchParams(location.search);
-    let filterValues = searchParams.getAll(sectionId);
+    let filterValues = checkedFilters[sectionId] || [];
   
     if (filterValues.includes(value)) {
-      filterValues = filterValues.filter((item) => item !== value);
+      filterValues = filterValues.filter(item => item !== value);
     } else {
       filterValues.push(value);
     }
   
-    searchParams.delete(sectionId);
-    filterValues.forEach((val) => {
-      searchParams.append(sectionId, val);
-    });
+    if (filterValues.length > 0) {
+      searchParams.set(sectionId, filterValues.join(','));
+    } else {
+      searchParams.delete(sectionId);
+    }
+  
+    setCheckedFilters(prev => ({
+      ...prev,
+      [sectionId]: filterValues
+    }));
   
     const query = searchParams.toString();
     navigate({ search: `?${query}` });
@@ -153,12 +178,29 @@ export default function Product() {
     navigate('/products');
   };
 
+  const [checkedFilters, setCheckedFilters] = useState({});
 
-  // useEffect(() => {
-  //   if (filtersOpen) {
-  //     setMobileFiltersOpen(true);
-  //   }
-  // }, [filtersOpen]);
+  const parseUrlForFilters = () => {
+    const searchParams = new URLSearchParams(location.search);
+    const newCheckedFilters = {};
+  
+    filters.forEach(section => {
+      const paramValue = searchParams.get(section.id);
+      if (paramValue) {
+        const values = paramValue.split(',');
+        newCheckedFilters[section.id] = values;
+      } else {
+        newCheckedFilters[section.id] = [];
+      }
+    });
+  
+    setCheckedFilters(newCheckedFilters);
+  };
+
+  useEffect(() => {
+    parseUrlForFilters();
+  }, [location.search]);
+
 
 
   return (
@@ -212,86 +254,103 @@ export default function Product() {
                   </div>
 
                   {/* Filters */}
-                  <form className="mt-4 border-t border-gray-200">
-                    {filters.map((section) => (
-                      <Disclosure
-                        as="div"
-                        key={section.id}
-                        className="border-t border-gray-200 px-4 py-6 font-poppins "
-                        // open={false}
-                      >
-                        {({ open }) => (
-                          <>
-                            <h3 className="-mx-2 -my-3 flow-root">
-                              <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                                <span className="font-medium font-poppins text-primarycolor text-gray-900  ">
-                                  {section.name}
-                                </span>
-                                <span className="ml-6 flex items-center">
-                                  {open ? (
-                                    <MinusIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"
-                                    />
-                                  ) : (
-                                    <PlusIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"
-                                    />
-                                  )}
-                                </span>
-                              </Disclosure.Button>
-                            </h3>
-                            <Disclosure.Panel className="pt-6">
-                              <div className="space-y-6">
-                                {section.options.map((option, optionIdx) => (
-                                  <div
-                                    key={option.value}
-                                    className="flex items-center font-poppins text-secondary-dark-color"
-                                  >
-                                    <input
-                                      id={`filter-mobile-${section.id}-${optionIdx}`}
-                                      name={`${section.id}[]`}
-                                      defaultValue={option.value}
-                                      type="checkbox"
-                                      defaultChecked={option.checked}
-                                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                      onChange={() =>
-                                        handleFilter(option.value, section.id)
-                                      }
-                                    />
-                                    <label
-                                      htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                                      className="ml-3 min-w-0 flex-1 text-gray-500"
-                                      // onClick={()=>handleFilter(option.value,section.id)}
-                                    >
-                                      {option.label}
-                                    </label>
-                                  </div>
-                                ))}
-                              </div>
-                            </Disclosure.Panel>
-                          </>
-                        )}
-                      </Disclosure>
-                    ))}
-                  </form>
+                  <form className="mt-4 border-t border-gray-200 lg:hidden bg-white shadow-sm">
+      {filters.map((section) => (
+        <Disclosure
+          as="div"
+          key={section.id}
+          className="border-b border-gray-200 last:border-b-0"
+        >
+          {({ open }) => (
+            <>
+              <h3 className="flow-root">
+                {section.link ? (
+                  <Link
+                    to={section.link}
+                    className="flex w-full items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <span className="font-medium font-poppins text-gray-900">
+                      {section.name}
+                    </span>
+                    <ChevronRightIcon className="h-5 w-5 text-gray-400" />
+                  </Link>
+                ) : (
+                  <Disclosure.Button className="flex w-full items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <span className="font-medium font-poppins text-gray-900">
+                      {section.name}
+                    </span>
+                    {section.options?.length > 0 ? (
+                      <ChevronDownIcon
+                        className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
+                          open ? 'transform rotate-180' : ''
+                        }`}
+                      />
+                    ) : (
+                      <div className="h-5 w-5 rounded-full border-2 border-gray-300" />
+                    )}
+                  </Disclosure.Button>
+                )}
+              </h3>
+              {!section.link && section.options?.length > 0 && (
+                <Transition
+                  enter="transition duration-100 ease-out"
+                  enterFrom="transform scale-95 opacity-0"
+                  enterTo="transform scale-100 opacity-100"
+                  leave="transition duration-75 ease-out"
+                  leaveFrom="transform scale-100 opacity-100"
+                  leaveTo="transform scale-95 opacity-0"
+                >
+                  <Disclosure.Panel className="px-4 pt-2 pb-3">
+                    <div className="space-y-2">
+                      {section.options.map((option, optionIdx) => (
+                        <div
+                          key={option.value}
+                          className="flex items-center font-poppins text-gray-700"
+                        >
+                          <input
+                            id={`filter-mobile-${section.id}-${optionIdx}`}
+                            name={`${section.id}[]`}
+                            value={option.value}
+                            type="checkbox"
+                            checked={
+                              checkedFilters[section.id]?.includes(option.value) || false
+                            }
+                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            onChange={() => handleFilter(option.value, section.id)}
+                          />
+                          <label
+                            htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
+                            className="ml-3 text-sm cursor-pointer"
+                          >
+                            {option.label}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </Disclosure.Panel>
+                </Transition>
+              )}
+            </>
+          )}
+        </Disclosure>
+      ))}
+    </form>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
           </Dialog>
         </Transition.Root>
 
-        <main className=" sm:px-4 px-4 lg:px-10 ">
-          <div className="flex items-center justify-between py-2 border-b border-gray-200 pb-6">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 font-poppins text-secondary-dark-color ">
+        <main className=" sm:px-4 px-0 lg:px-10 ">
+          <div className="flex items-baseline justify-between border-b border-gray-200 pb-6">
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900 font-poppins text-secondary-dark-color ">
               Product
             </h1>
 
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900 m-2 font-poppins ">
+                  <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900 m-2 ">
                     Sort
                     <ChevronDownIcon
                       className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
@@ -309,8 +368,8 @@ export default function Product() {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none ">
-                    <div className="py-1  ">
+                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <div className="py-1">
                       {sortOptions.map((option) => (
                         <Menu.Item key={option.name}>
                           {({ active }) => (
@@ -321,7 +380,7 @@ export default function Product() {
                                   ? "font-medium text-gray-900"
                                   : "text-gray-500",
                                 active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm cursor-pointer font-poppins "
+                                "block px-4 py-2 text-sm cursor-pointer"
                               )}
                             >
                               {option.name}
@@ -363,57 +422,73 @@ export default function Product() {
         }`}>
                 {/* Filters */}
                 {!searchQuery && (
-                <form className="hidden lg:block shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-md py-5 px-2 ">
-                  {filters.map((section) => (
-                    <Disclosure
-                      // defaultOpen={false}
-                      as="div"
-                      key={section.id}
-                      className="border-b border-gray-200 py-6"
-                    >
-                      {({ open }) => (
-                        <>
-                          <h3 className="-my-3 flow-root">
-                            <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                              <span className="font-medium  text-secondary-dark-color font-poppins text-lg">
-                                {section.name}
-                              </span>
-                              <span className="ml-6 flex items-center">
-                                {open ? (
-                                  <MinusIcon
-                                    className="h-5 w-5 text-secondary-dark-color"
-                                    aria-hidden="true"
-                                  />
-                                ) : (
-                                  <PlusIcon
-                                    className="h-5 w-5 text-secondary-dark-color"
-                                    aria-hidden="true"
-                                  />
-                                )}
-                              </span>
-                            </Disclosure.Button>
-                          </h3>
-                          <Disclosure.Panel className="pt-6">
-                            <div className="space-y-4">
+              <form className="mt-4 border-t border-gray-200 hidden lg:block bg-white shadow-md rounded-lg overflow-hidden">
+              {filters.map((section) => (
+                <Disclosure
+                  as="div"
+                  key={section.id}
+                  className="border-b border-gray-200 last:border-b-0"
+                >
+                  {({ open }) => (
+                    <>
+                      <h3 className="flow-root">
+                        {section.link ? (
+                          <Link
+                            to={section.link}
+                            className="flex w-full items-center justify-between px-6 py-4 text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                          >
+                            <span className="font-semibold font-poppins text-gray-900">
+                              {section.name}
+                            </span>
+                            <ChevronRightIcon className="h-5 w-5 text-gray-400" />
+                          </Link>
+                        ) : (
+                          <Disclosure.Button className="flex w-full items-center justify-between px-6 py-4 text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                            <span className="font-semibold font-poppins text-gray-900">
+                              {section.name}
+                            </span>
+                            {section.options?.length > 0 ? (
+                              <ChevronDownIcon
+                                className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
+                                  open ? 'transform rotate-180' : ''
+                                }`}
+                              />
+                            ) : (
+                              <div className="h-5 w-5 rounded-full border-2 border-gray-300" />
+                            )}
+                          </Disclosure.Button>
+                        )}
+                      </h3>
+                      {!section.link && section.options?.length > 0 && (
+                        <Transition
+                          enter="transition duration-100 ease-out"
+                          enterFrom="transform scale-95 opacity-0"
+                          enterTo="transform scale-100 opacity-100"
+                          leave="transition duration-75 ease-out"
+                          leaveFrom="transform scale-100 opacity-100"
+                          leaveTo="transform scale-95 opacity-0"
+                        >
+                          <Disclosure.Panel className="px-6 pt-2 pb-4">
+                            <div className="space-y-3">
                               {section.options.map((option, optionIdx) => (
                                 <div
                                   key={option.value}
-                                  className="flex items-center text-secondary-dark-color font-poppins"
+                                  className="flex items-center font-poppins text-gray-700"
                                 >
                                   <input
                                     id={`filter-${section.id}-${optionIdx}`}
                                     name={`${section.id}[]`}
-                                    defaultValue={option.value}
+                                    value={option.value}
                                     type="checkbox"
-                                    defaultChecked={option.checked}
-                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                    onChange={() =>
-                                      handleFilter(option.value, section.id)
+                                    checked={
+                                      checkedFilters[section.id]?.includes(option.value) || false
                                     }
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                    onChange={() => handleFilter(option.value, section.id)}
                                   />
                                   <label
                                     htmlFor={`filter-${section.id}-${optionIdx}`}
-                                    className="ml-3 text-sm text-gray-600"
+                                    className="ml-3 text-sm cursor-pointer hover:text-gray-900"
                                   >
                                     {option.label}
                                   </label>
@@ -421,16 +496,17 @@ export default function Product() {
                               ))}
                             </div>
                           </Disclosure.Panel>
-                        </>
+                        </Transition>
                       )}
-                    </Disclosure>
-                  ))}
-                 
-                </form>
+                    </>
+                  )}
+                </Disclosure>
+              ))}
+            </form>
                 )}
 
                 {/* Product grid */}
-                <div className="lg:col-span-4 col-span-2 mx-auto   ">
+                <div className="lg:col-span-4 sm:w-full mx-auto sm:max-w-full sm:mx-0 px-0 ">
                 {searchQuery && (
           <>
             <h1 className='text-center font-poppins font-bold text-xl py-3'>
@@ -452,12 +528,13 @@ export default function Product() {
                
                 
                 
-                  <div className="flex flex-wrap justify-center sm:space-x-5 gap-5 sm:gap-5 bg-white py-5  rounded-md ">
-                    {productList?.map((item) => (
-                      <ProductCard product={item} key={item.id} />
-                     
-                    ))}
-                  </div>
+<div className="bg-white py-5 rounded-md">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
+        {productList?.map((item) => (
+          <ProductCard product={item} key={item.id} />
+        ))}
+      </div>
+    </div>
                 </div>
               </div>
             </div>
@@ -476,11 +553,6 @@ export default function Product() {
             />
           </div>
         </section>
-
-        {/* {backdrop} */}
-        {/* <section>
-         <BackdropComponent open={isLoaderOpen}/>
-        </section> */}
       </div>
     </div>
   );

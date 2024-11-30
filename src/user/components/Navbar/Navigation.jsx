@@ -485,7 +485,7 @@ export default function Navigation() {
               <MenuItems to="/products?query=Resin" label="Resin Art">
               <SubMenuItem to="/products?resin=keychains" label="Key Chains" />
                 <SubMenuItem to="/products?resin=wallclock" label="Wall Clock" />
-                <SubMenuItem to="/products?resin=marriagespecial" label="Varmala Preservation - Marriage special" />
+                <SubMenuItem to="/products?resin=marriagespecial" label="Marriage special" />
               <SubMenuItem to="/products?resin=poojathali" label="Pooja Thali" />
               <SubMenuItem to="/products?resin=mantraframe" label="Mantra Frame" />
               </MenuItems>

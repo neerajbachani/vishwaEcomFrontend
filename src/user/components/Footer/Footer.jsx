@@ -18,7 +18,7 @@ const Footer = () => {
   {[
     { name: 'All Products', link: '/products' }, 
     { name: 'Gallery', link: '/gallery' }, 
-    { name: 'Digital Art', link: '/products?digitalArt=digitalartedition' },
+    { name: 'Digital Art', link: '/products?digitalArt=digitalartedition&digitalArt=illustrationoncanvas' },
     { name: 'Lippan Art', link: '/products?lippanArt=lippanartedition' },
     { name: 'Festival Special', link: '/products?festivalSpecial=diwali&festivalSpecial=rakhi' },
     { name: 'About Us', link: '/about-us' },

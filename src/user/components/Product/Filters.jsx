@@ -49,9 +49,12 @@ export const filters = [
   },
   {
     id: "digitalArt",
-    name: "Digital Art",
+    name: "Art",
     options: [
       { value: "digitalartedition", label: "Digital Art Edition" },
+      { value: "illustrationoncanvas", label: "Illustration on Canvas" },
+      { value: "lippanart", label: "Lippan Art" },
+      { value: "geodeart", label: "Geode Art" },
     ],
   },
   {
@@ -61,20 +64,20 @@ export const filters = [
       { value: "businessplate", label: "Business Plate" },
     ],
   },
-  {
-    id: "lippanArt",
-    name: "Lippan Art",
-    options: [
-      { value: "lippanartedition", label: "Lippan Art Edition" },
-    ],
-  },
-  {
-    id: "geodeArt",
-    name: "Geode Art",
-    options: [
-      { value: "geodeartedition", label: "Geode Art Edition" },
-    ],
-  },
+  // {
+  //   id: "lippanArt",
+  //   name: "Lippan Art",
+  //   options: [
+  //     { value: "lippanartedition", label: "Lippan Art Edition" },
+  //   ],
+  // },
+  // {
+  //   id: "geodeArt",
+  //   name: "Geode Art",
+  //   options: [
+  //     { value: "geodeartedition", label: "Geode Art Edition" },
+  //   ],
+  // },
   {
     id: "vintage",
     name: "Vintage",

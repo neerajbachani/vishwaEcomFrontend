@@ -341,7 +341,12 @@ const jwt=localStorage.getItem("jwt")
                 onChange={handleChange}
                 label="Digital Art"
               >
-                <MenuItem value="digitalartedition">Digital Art Edition</MenuItem>
+                <MenuItem value="digitalartedition">Digital Art</MenuItem>
+                <MenuItem value="illustrationoncanvas">Illustration on Canvas</MenuItem>
+                <MenuItem value="lippanart">Lippan Art</MenuItem>
+                <MenuItem value="geodeart">Geode Art</MenuItem>
+
+
               </Select>
             </FormControl>
           </Grid>
